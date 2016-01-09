@@ -4,6 +4,11 @@
 #include <string.h>
 #include "mem.h"
 #include "gram.tab.h"
+
+#include "op_fisier.h"
+
+/* fisier pentru cod output. Definifi in op_fisier.h*/
+extern FILE *f;
 %}
 
 /* Stop the error "undefined reference to 'yywrap'" from Flex */
@@ -21,7 +26,7 @@
 
 %%
 [ \t]
-[0-9]+(\.[0-9]+)?          					{ yylval.num = atof(yytext); return NUMBER; }
+[0-9]+(\.[0-9]+)?          					{  yylval.num = atof(yytext); return NUMBER; }
 "+"                         					{ return ADD; }
 "-"                         					{ return SUB; }
 "*"                         					{ return MUL; }
@@ -57,8 +62,11 @@
 ("fah_to_cel")|("FAH_TO_CEL")					{ return FAH_TO_CEL; }
 ("km_to_m")|("KM_TO_M")								{ return KM_TO_M; }
 ("m_to_km")|("M_TO_KM")								{ return M_TO_KM; }
+("afiseaza")										{ return AFISEAZA; }
+"gata"	return STOP;
+"stop"	return STOP;
 ("var")|("VAR")												{ return VAR_KEYWORD; }
-[a-zA-Z0-9]+  												{ yylval.index = add_variable(yytext); return VARIABLE; }
+[a-zA-Z0-9]+  												{ yylval.index = adauga_variabila(yytext); return VARIABLE; }
 [\n]                        					{ return EOL; }
-. 																		{ yyerror("Undefined symbol"); exit(1); } 
+. 																		{ yyerror("Simbol nedefinit"); exit(1); } 
 %%

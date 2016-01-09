@@ -6,18 +6,21 @@
 #include "func.h"
 #include "gram.tab.h"
 
-/* Used for variable stores. Defined in mem.h */
-extern double variable_values[100];
+/* fisier pentru cod output. Definifi in op_fisier.h*/
+extern FILE *f;
+
+/* Stochez variabile. Definite in mem.h */
+extern double variabile_valori[100];
 extern int variable_set[100];
 
-/* Flex functions */
+/* functi flex */
 extern int yylex(void);
 extern void yyterminate();
 void yyerror(const char *s);
 extern FILE* yyin;
 %}
 
-/* Bison declarations */
+/* declaratii bison */
 
 /* 
 If you have used %union to specify a variety of data types, then you must declare a choice among these 
@@ -26,10 +29,14 @@ types for each terminal or nonterminal symbol that can have a semantic value.
 Then each time you use $$ or $n, its data type is determined by which symbol it refers to in the rule. 
 (http://dinosaur.compilertools.net/bison/bison_6.html)
 */
+
+/* specificare tipuri de date */
 %union {
 	int index;
 	double num;
 }
+
+/* definire token-uri */
 
 %token<num> NUMBER
 %token<num> L_BRACKET R_BRACKET
@@ -46,6 +53,7 @@ Then each time you use $$ or $n, its data type is determined by which symbol it 
 %token<num> M_TO_KM KM_TO_M
 %token<num> VAR_KEYWORD 
 %token<index> VARIABLE
+%token      AFISEAZA
 %token<num> EOL
 %type<num> program_input
 %type<num> line
@@ -60,6 +68,9 @@ Then each time you use $$ or $n, its data type is determined by which symbol it 
 %type<num> conversion
 %type<num> temperature_conversion
 %type<num> distance_conversion
+
+%token STOP
+
 
 /* Set operator precedence, follows BODMAS rules. */
 %left SUB 
@@ -99,16 +110,18 @@ result:    rule1-components...
         ...
         ;
 				
-(http://dinosaur.compilertools.net/bison/bison_6.html)				
+(http://dinosaur.compilertools.net/bison/bison_6.html)
 */
+							/* Cod C asociat fiecarei expresii + Scriere in fisierul de output.*/
 %%
 program_input:
 	| program_input line
 	;
 	
 line: 
-			EOL 						 { printf("Please enter a calculation:\n"); }
-		| calculation EOL  { printf("=%.2f\n",$1); }
+			EOL 			{ printf("Introduceti o comanda:\n"); }
+		| calculation EOL  	{ //printf("%.2f\n", $1); 
+							}
     ;
 
 calculation:
@@ -121,9 +134,13 @@ constant: PI { $$ = 3.142; }
 		;
 		
 expr:
-			SUB expr					{ $$ = -$2; }
-    | NUMBER            { $$ = $1; }
-		| VARIABLE					{ $$ = variable_values[$1]; }
+			SUB expr		{ $$ = -$2; }
+    	| NUMBER            { $$ = $1; 
+    						
+    						}
+		| VARIABLE			{ 
+								$$ = variabile_valori[$1]; 
+							}
 		| constant	
 		| function
 		| expr DIV expr     { if ($3 == 0) { yyerror("Cannot divide by zero"); exit(1); } else $$ = $1 / $3; }
@@ -133,6 +150,13 @@ expr:
 		| expr SUB expr   	{ $$ = $1 - $3; }
 		| expr POW expr     { $$ = pow($1, $3); }
 		| expr MOD expr     { $$ = modulo($1, $3); }
+		| AFISEAZA VARIABLE 	{ 
+								fprintf(f, "print %s\n", nume_variabila($2)); 
+								printf("%f\n", (float)variabile_valori[$2]);
+								}
+		| STOP				{ 
+							fprintf(f, "exit()");
+							printf("salut :)\n"); exit(0); }
     ;
 		
 function: 
@@ -140,15 +164,15 @@ function:
 		| log_function
 		| trig_function
 		| hyperbolic_function
-		|	SQRT expr      		{ $$ = sqrt($2); }
-		| expr FACTORIAL		{ $$ = factorial($1); }
+		|	SQRT expr      			{ $$ = sqrt($2); }
+		| expr FACTORIAL			{ $$ = factorial($1); }
 		| ABS expr 					{ $$ = abs($2); }
 		| FLOOR expr 				{ $$ = floor($2); }
 		| CEIL expr 				{ $$ = ceil($2); }
 		;
 
 trig_function:
-			COS expr  			  { $$ = cos($2); }
+			COS expr  			  	{ $$ = cos($2); }
 		| SIN expr 					{ $$ = sin($2); }
 		| TAN expr 					{ $$ = tan($2); }
 		;
@@ -159,7 +183,7 @@ log_function:
 		;
 		
 hyperbolic_function:
-			COSH expr  			  { $$ = cosh($2); }
+			COSH expr  			  	{ $$ = cosh($2); }
 		| SINH expr 				{ $$ = sinh($2); }
 		| TANH expr 				{ $$ = tanh($2); }
 		;
@@ -167,7 +191,7 @@ hyperbolic_function:
 conversion:
 		temperature_conversion
 		| distance_conversion
-		|	expr GBP_TO_USD   { $$ = gbp_to_usd($1); }
+		| expr GBP_TO_USD   { $$ = gbp_to_usd($1); }
 		| expr USD_TO_GBP   { $$ = usd_to_gbp($1); }
 		| expr GBP_TO_EURO  { $$ = gbp_to_euro($1); }
 		| expr EURO_TO_GBP  { $$ = euro_to_gbp($1); }
@@ -184,7 +208,9 @@ distance_conversion:
 		| expr KM_TO_M 			{ $$ = km_to_m($1); }
 		
 assignment: 
-		VAR_KEYWORD VARIABLE EQUALS calculation { $$ = set_variable($2, $4); }
+		VAR_KEYWORD VARIABLE EQUALS calculation { $$ = set_variabila($2, $4);
+												fprintf(f, "%s = %f \n", nume_variabila($2), (double)$4);
+												}
 		;
 %%
 
@@ -192,6 +218,12 @@ assignment:
 int main(int argc, char **argv)
 {
 	char* c = "";
+
+	// deschide fisier output
+	deschide_fisier("output.py");
+
+	fprintf(f, "%s\n%s\n\n\n", 	"#!/usr/bin/python", "import math");
+
 	//printf("Command line ASor File? (Enter C or F): ");
 	//scanf("%s", c);
 	
@@ -217,6 +249,8 @@ int main(int argc, char **argv)
 		yyin = stdin;
 		yyparse();
 	}
+
+	inchide_fisier();
 }
 
 /* Display error messages */

@@ -82,7 +82,9 @@ extern int yydebug;
      KM_TO_M = 291,
      VAR_KEYWORD = 292,
      VARIABLE = 293,
-     EOL = 294
+     AFISEAZA = 294,
+     EOL = 295,
+     STOP = 296
    };
 #endif
 
@@ -91,14 +93,14 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 2058 of yacc.c  */
-#line 29 "gram.y"
+#line 34 "gram.y"
 
 	int index;
 	double num;
 
 
 /* Line 2058 of yacc.c  */
-#line 102 "gram.tab.h"
+#line 104 "gram.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

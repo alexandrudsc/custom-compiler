@@ -1,43 +1,47 @@
 #ifndef MEM_H
 #define MEM_H
 
-/* Series of functions used to add memory store functionality to the calculator */
+/* Functii pentru pastrarea variabileleor  in memorie*/
 
-// Store variable names
-char* variable_names[100]; 
-// Flags for if the variables have been set
+// Nume variabile
+char* nume_variabile[100]; 
+// Flag-uri pentru setarea variabilelor
 int variable_set[100];
-// Number of variables defined
+// Numarul de variabile
 int variable_counter = 0; 
-// Store values of the variables
-double variable_values[100];
+// Valoare variabile
+double variabile_valori[100];
 
-/* Add a variable name to the memory store */
-int add_variable(char* var_name)
+/* Adauga o variabila in memorie */
+int adauga_variabila(char* var_name)
 {
 	int x; // Index var
 	
-	/* Search for the variable and return its index if found */	
-	for (x = 0; x<variable_counter; x++) {
-		if (strcmp(var_name, variable_names[x]) == 0) {
+	/* Cauta variabila dupa nume si returnez index-ul ei (daca exista)*/	
+	for (x = 0; x < variable_counter; x++) {
+		if (strcmp (var_name, nume_variabile[x]) == 0) {
 				return x;
 		}
 	}
 
-	/* Variable not found yet. */
-	/* Define it and add it to the end of the array. */
+	/* Daca variabila nu exista, o adaug */
 	variable_counter++;
-	variable_names[x] = strdup(var_name);
+	nume_variabile[x] = strdup(var_name);
 	return x;
 }
 
-/* Set a variables value in the memory store */
-int set_variable(int index, double val)
+/* Seteaza valoarea unei variabile */
+int set_variabila(int index, double val)
 {
-	variable_values[index] = val;
+	variabile_valori[index] = val;
 	variable_set[index] = 1;
 	
 	return val;
+}
+
+char* nume_variabila(int index)
+{
+	return nume_variabile[index];
 }
 
 #endif
