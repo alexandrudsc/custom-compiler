@@ -11,8 +11,6 @@ CS Assignment - scientific calculator using Bison &amp; Flex, with additonal fun
 * Variable stores (create and use your own variables. See example)
 * Can read input the command line or a file
 
-## Example
-![example screenshot](http://i.imgur.com/FArh5XE.png "Example use of the calculator")
 
 ## Requirements
 1. Bison (needs adding to PATH on windows)
@@ -24,3 +22,9 @@ CS Assignment - scientific calculator using Bison &amp; Flex, with additonal fun
 2. flex lex.l
 3. gcc gram.tab.c lex.yy.c -lm -o scientific-calc
 4. scientific-calc
+
+## Compile using make.bat file:
+1. Add win_flex and win_bison to the project
+2. set GCC path 
+2. make.bat
+3. make.bat clean - delete all previous output
