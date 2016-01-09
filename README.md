@@ -26,5 +26,5 @@ CS Assignment - scientific calculator using Bison &amp; Flex, with additonal fun
 ## Compile using make.bat file:
 1. Add win_flex and win_bison to the project
 2. set GCC path 
-2. make.bat
-3. make.bat clean - delete all previous output
+2. make
+3. make clean - delete all previous output
