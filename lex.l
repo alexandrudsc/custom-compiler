@@ -11,19 +11,21 @@
 extern FILE *f;
 %}
 
-/* Stop the error "undefined reference to 'yywrap'" from Flex */
+/* optiune pentru oprire eroare "undefined reference to 'yywrap'" de la Flex */
 %option noyywrap
+/* optiune pentru numararea liniei curente in interpretare cu Flex */
+%option yylineno
 
-/* Grammar rules
-	[ \t] -- Match space or tab
+/* reguli de gramatica
+	[ \t] --spatiu sau tab
 	
-	[0-9]+(\.[0-9]+)?  -- Match any combination of numbers. Includes decimals. 
+	[0-9]+(\.[0-9]+)?  -- combinatii de numere 
 	
-	[a-zA-Z0-9]+ -- Match any combination of letters (lower and upper case) and numbers.
+	[a-zA-Z0-9]+ -- combinatii de litere (majuscule sau minuscule) si numere
 	
-	. -- Match any remaining character.
+	. 	-- orice alt caracter => EROARE
 */
-
+						/****************** definire gramatica ***************/
 %%
 [ \t]
 [0-9]+(\.[0-9]+)?          					{  yylval.num = atof(yytext); return NUMBER; }

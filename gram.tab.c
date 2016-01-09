@@ -79,14 +79,16 @@ extern FILE *f;
 extern double variabile_valori[100];
 extern int variable_set[100];
 
-/* functi flex */
+/* functii flex */
 extern int yylex(void);
 extern void yyterminate();
 void yyerror(const char *s);
 extern FILE* yyin;
 
+extern int yylineno;
+
 /* Line 371 of yacc.c  */
-#line 90 "gram.tab.c"
+#line 92 "gram.tab.c"
 
 # ifndef YY_NULL
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -169,14 +171,14 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 387 of yacc.c  */
-#line 34 "gram.y"
+#line 36 "gram.y"
 
 	int index;
 	double num;
 
 
 /* Line 387 of yacc.c  */
-#line 180 "gram.tab.c"
+#line 182 "gram.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -204,7 +206,7 @@ int yyparse ();
 /* Copy the second part of user declarations.  */
 
 /* Line 390 of yacc.c  */
-#line 208 "gram.tab.c"
+#line 210 "gram.tab.c"
 
 #ifdef short
 # undef short
@@ -513,12 +515,12 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,   117,   117,   118,   122,   123,   128,   129,   130,   133,
-     137,   138,   141,   144,   145,   146,   147,   148,   149,   150,
-     151,   152,   153,   157,   163,   164,   165,   166,   167,   168,
-     169,   170,   171,   175,   176,   177,   181,   182,   186,   187,
-     188,   192,   193,   194,   195,   196,   197,   198,   199,   203,
-     204,   207,   208,   211
+       0,    91,    91,    92,    96,    97,   102,   103,   104,   107,
+     111,   112,   115,   118,   119,   120,   121,   122,   123,   124,
+     125,   126,   127,   131,   137,   138,   139,   140,   141,   142,
+     143,   144,   145,   149,   150,   151,   155,   156,   160,   161,
+     162,   166,   167,   168,   169,   170,   171,   172,   173,   177,
+     178,   181,   182,   185
 };
 #endif
 
@@ -1512,32 +1514,32 @@ yyreduce:
     {
         case 4:
 /* Line 1792 of yacc.c  */
-#line 122 "gram.y"
+#line 96 "gram.y"
     { printf("Introduceti o comanda:\n"); }
     break;
 
   case 5:
 /* Line 1792 of yacc.c  */
-#line 123 "gram.y"
+#line 97 "gram.y"
     { //printf("%.2f\n", $1); 
 							}
     break;
 
   case 9:
 /* Line 1792 of yacc.c  */
-#line 133 "gram.y"
+#line 107 "gram.y"
     { (yyval.num) = 3.142; }
     break;
 
   case 10:
 /* Line 1792 of yacc.c  */
-#line 137 "gram.y"
+#line 111 "gram.y"
     { (yyval.num) = -(yyvsp[(2) - (2)].num); }
     break;
 
   case 11:
 /* Line 1792 of yacc.c  */
-#line 138 "gram.y"
+#line 112 "gram.y"
     { (yyval.num) = (yyvsp[(1) - (1)].num); 
     						
     						}
@@ -1545,7 +1547,7 @@ yyreduce:
 
   case 12:
 /* Line 1792 of yacc.c  */
-#line 141 "gram.y"
+#line 115 "gram.y"
     { 
 								(yyval.num) = variabile_valori[(yyvsp[(1) - (1)].index)]; 
 							}
@@ -1553,58 +1555,58 @@ yyreduce:
 
   case 15:
 /* Line 1792 of yacc.c  */
-#line 146 "gram.y"
+#line 120 "gram.y"
     { if ((yyvsp[(3) - (3)].num) == 0) { yyerror("Cannot divide by zero"); exit(1); } else (yyval.num) = (yyvsp[(1) - (3)].num) / (yyvsp[(3) - (3)].num); }
     break;
 
   case 16:
 /* Line 1792 of yacc.c  */
-#line 147 "gram.y"
+#line 121 "gram.y"
     { (yyval.num) = (yyvsp[(1) - (3)].num) * (yyvsp[(3) - (3)].num); }
     break;
 
   case 17:
 /* Line 1792 of yacc.c  */
-#line 148 "gram.y"
+#line 122 "gram.y"
     { (yyval.num) = (yyvsp[(2) - (3)].num); }
     break;
 
   case 18:
 /* Line 1792 of yacc.c  */
-#line 149 "gram.y"
+#line 123 "gram.y"
     { (yyval.num) = (yyvsp[(1) - (3)].num) + (yyvsp[(3) - (3)].num); }
     break;
 
   case 19:
 /* Line 1792 of yacc.c  */
-#line 150 "gram.y"
+#line 124 "gram.y"
     { (yyval.num) = (yyvsp[(1) - (3)].num) - (yyvsp[(3) - (3)].num); }
     break;
 
   case 20:
 /* Line 1792 of yacc.c  */
-#line 151 "gram.y"
+#line 125 "gram.y"
     { (yyval.num) = pow((yyvsp[(1) - (3)].num), (yyvsp[(3) - (3)].num)); }
     break;
 
   case 21:
 /* Line 1792 of yacc.c  */
-#line 152 "gram.y"
+#line 126 "gram.y"
     { (yyval.num) = modulo((yyvsp[(1) - (3)].num), (yyvsp[(3) - (3)].num)); }
     break;
 
   case 22:
 /* Line 1792 of yacc.c  */
-#line 153 "gram.y"
+#line 127 "gram.y"
     { 
 								fprintf(f, "print %s\n", nume_variabila((yyvsp[(2) - (2)].index))); 
-								printf("%f", (float)variabile_valori[(yyvsp[(2) - (2)].index)]);
+								printf("%f\n", (float)variabile_valori[(yyvsp[(2) - (2)].index)]);
 								}
     break;
 
   case 23:
 /* Line 1792 of yacc.c  */
-#line 157 "gram.y"
+#line 131 "gram.y"
     { 
 							fprintf(f, "exit()");
 							printf("salut :)\n"); exit(0); }
@@ -1612,145 +1614,145 @@ yyreduce:
 
   case 28:
 /* Line 1792 of yacc.c  */
-#line 167 "gram.y"
+#line 141 "gram.y"
     { (yyval.num) = sqrt((yyvsp[(2) - (2)].num)); }
     break;
 
   case 29:
 /* Line 1792 of yacc.c  */
-#line 168 "gram.y"
+#line 142 "gram.y"
     { (yyval.num) = factorial((yyvsp[(1) - (2)].num)); }
     break;
 
   case 30:
 /* Line 1792 of yacc.c  */
-#line 169 "gram.y"
+#line 143 "gram.y"
     { (yyval.num) = abs((yyvsp[(2) - (2)].num)); }
     break;
 
   case 31:
 /* Line 1792 of yacc.c  */
-#line 170 "gram.y"
+#line 144 "gram.y"
     { (yyval.num) = floor((yyvsp[(2) - (2)].num)); }
     break;
 
   case 32:
 /* Line 1792 of yacc.c  */
-#line 171 "gram.y"
+#line 145 "gram.y"
     { (yyval.num) = ceil((yyvsp[(2) - (2)].num)); }
     break;
 
   case 33:
 /* Line 1792 of yacc.c  */
-#line 175 "gram.y"
+#line 149 "gram.y"
     { (yyval.num) = cos((yyvsp[(2) - (2)].num)); }
     break;
 
   case 34:
 /* Line 1792 of yacc.c  */
-#line 176 "gram.y"
+#line 150 "gram.y"
     { (yyval.num) = sin((yyvsp[(2) - (2)].num)); }
     break;
 
   case 35:
 /* Line 1792 of yacc.c  */
-#line 177 "gram.y"
+#line 151 "gram.y"
     { (yyval.num) = tan((yyvsp[(2) - (2)].num)); }
     break;
 
   case 36:
 /* Line 1792 of yacc.c  */
-#line 181 "gram.y"
+#line 155 "gram.y"
     { (yyval.num) = log2((yyvsp[(2) - (2)].num)); }
     break;
 
   case 37:
 /* Line 1792 of yacc.c  */
-#line 182 "gram.y"
+#line 156 "gram.y"
     { (yyval.num) = log10((yyvsp[(2) - (2)].num)); }
     break;
 
   case 38:
 /* Line 1792 of yacc.c  */
-#line 186 "gram.y"
+#line 160 "gram.y"
     { (yyval.num) = cosh((yyvsp[(2) - (2)].num)); }
     break;
 
   case 39:
 /* Line 1792 of yacc.c  */
-#line 187 "gram.y"
+#line 161 "gram.y"
     { (yyval.num) = sinh((yyvsp[(2) - (2)].num)); }
     break;
 
   case 40:
 /* Line 1792 of yacc.c  */
-#line 188 "gram.y"
+#line 162 "gram.y"
     { (yyval.num) = tanh((yyvsp[(2) - (2)].num)); }
     break;
 
   case 43:
 /* Line 1792 of yacc.c  */
-#line 194 "gram.y"
+#line 168 "gram.y"
     { (yyval.num) = gbp_to_usd((yyvsp[(1) - (2)].num)); }
     break;
 
   case 44:
 /* Line 1792 of yacc.c  */
-#line 195 "gram.y"
+#line 169 "gram.y"
     { (yyval.num) = usd_to_gbp((yyvsp[(1) - (2)].num)); }
     break;
 
   case 45:
 /* Line 1792 of yacc.c  */
-#line 196 "gram.y"
+#line 170 "gram.y"
     { (yyval.num) = gbp_to_euro((yyvsp[(1) - (2)].num)); }
     break;
 
   case 46:
 /* Line 1792 of yacc.c  */
-#line 197 "gram.y"
+#line 171 "gram.y"
     { (yyval.num) = euro_to_gbp((yyvsp[(1) - (2)].num)); }
     break;
 
   case 47:
 /* Line 1792 of yacc.c  */
-#line 198 "gram.y"
+#line 172 "gram.y"
     { (yyval.num) = usd_to_euro((yyvsp[(1) - (2)].num)); }
     break;
 
   case 48:
 /* Line 1792 of yacc.c  */
-#line 199 "gram.y"
+#line 173 "gram.y"
     { (yyval.num) = euro_to_usd((yyvsp[(1) - (2)].num)); }
     break;
 
   case 49:
 /* Line 1792 of yacc.c  */
-#line 203 "gram.y"
+#line 177 "gram.y"
     { (yyval.num) = cel_to_fah((yyvsp[(1) - (2)].num)); }
     break;
 
   case 50:
 /* Line 1792 of yacc.c  */
-#line 204 "gram.y"
+#line 178 "gram.y"
     { (yyval.num) = fah_to_cel((yyvsp[(1) - (2)].num)); }
     break;
 
   case 51:
 /* Line 1792 of yacc.c  */
-#line 207 "gram.y"
+#line 181 "gram.y"
     { (yyval.num) = m_to_km((yyvsp[(1) - (2)].num)); }
     break;
 
   case 52:
 /* Line 1792 of yacc.c  */
-#line 208 "gram.y"
+#line 182 "gram.y"
     { (yyval.num) = km_to_m((yyvsp[(1) - (2)].num)); }
     break;
 
   case 53:
 /* Line 1792 of yacc.c  */
-#line 211 "gram.y"
+#line 185 "gram.y"
     { (yyval.num) = set_variabila((yyvsp[(2) - (4)].index), (yyvsp[(4) - (4)].num));
 												fprintf(f, "%s = %f \n", nume_variabila((yyvsp[(2) - (4)].index)), (double)(yyvsp[(4) - (4)].num));
 												}
@@ -1758,7 +1760,7 @@ yyreduce:
 
 
 /* Line 1792 of yacc.c  */
-#line 1762 "gram.tab.c"
+#line 1764 "gram.tab.c"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1990,10 +1992,10 @@ yyreturn:
 
 
 /* Line 2055 of yacc.c  */
-#line 215 "gram.y"
+#line 189 "gram.y"
 
 
-/* Entry point */
+/****************** punct de start *********************************/
 int main(int argc, char **argv)
 {
 	char* c = "";
@@ -2032,8 +2034,8 @@ int main(int argc, char **argv)
 	inchide_fisier();
 }
 
-/* Display error messages */
+/* Afiseaza mesaj de eroare */
 void yyerror(const char *s)
 {
-	printf("ERROR: %s\n", s);
+	printf("EROARE: %s\n la linia: %d", s, yylineno);
 }

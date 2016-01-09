@@ -6,37 +6,33 @@
 #include "func.h"
 #include "gram.tab.h"
 
-/* fisier pentru cod output. Definifi in op_fisier.h*/
+			/* fisier pentru cod output. Definifi in op_fisier.h*/
 extern FILE *f;
 
-/* Stochez variabile. Definite in mem.h */
+			/* Stochez variabile. Definite in mem.h */
 extern double variabile_valori[100];
 extern int variable_set[100];
 
-/* functi flex */
+			/* functii flex */
 extern int yylex(void);
 extern void yyterminate();
 void yyerror(const char *s);
 extern FILE* yyin;
+
+extern int yylineno;
 %}
 
-/* declaratii bison */
+						/**** declaratii bison ****/
 
-/* 
-If you have used %union to specify a variety of data types, then you must declare a choice among these 
-types for each terminal or nonterminal symbol that can have a semantic value. 
 
-Then each time you use $$ or $n, its data type is determined by which symbol it refers to in the rule. 
-(http://dinosaur.compilertools.net/bison/bison_6.html)
-*/
 
-/* specificare tipuri de date */
+						/**** specificare tipuri de date ******/
 %union {
 	int index;
 	double num;
 }
 
-/* definire token-uri */
+						/******* definire token-uri ******/
 
 %token<num> NUMBER
 %token<num> L_BRACKET R_BRACKET
@@ -71,8 +67,9 @@ Then each time you use $$ or $n, its data type is determined by which symbol it 
 
 %token STOP
 
+					/* token-uri structuri de control */
 
-/* Set operator precedence, follows BODMAS rules. */
+					/* token-uri precedenta operatorilor */
 %left SUB 
 %left ADD
 %left MUL 
@@ -80,39 +77,9 @@ Then each time you use $$ or $n, its data type is determined by which symbol it 
 %left POW SQRT 
 %left L_BRACKET R_BRACKET
 
-/* Grammar rules */
-/*Symbols in Bison grammars represent the grammatical classifications of the language.
 
-A terminal symbol (also known as a token type) represents a class of syntactically equivalent tokens. You use the symbol in grammar rules to mean that a token in that class is allowed. The symbol is represented in the Bison parser by a numeric code, and the yylex function returns a token type code to indicate what kind of token has been read. You don't need to know what the code value is; you can use the symbol to stand for it.
+		/********** Cod C asociat fiecarei expresii + Scriere in fisierul de output. ************/
 
-A nonterminal symbol stands for a class of syntactically equivalent groupings. The symbol name is used in writing grammar rules. By convention, it should be all lower case. 
-
-/*  A Bison grammar rule has the following general form:
-
-result: components...
-        ;
-
-where result is the nonterminal symbol that this rule describes and components are various terminal and nonterminal symbols that are put together by this rule.
-
-For example,
-
-exp:      exp '+' exp
-        ;
-
-says that two groupings of type exp, with a `+' token in between, can be combined into a larger grouping of type exp.
-
-Whitespace in rules is significant only to separate symbols. You can add extra whitespace as you wish.
-
-Multiple rules for the same result can be written separately or can be joined with the vertical-bar character `|' as follows:
-
-result:    rule1-components...
-        | rule2-components...
-        ...
-        ;
-				
-(http://dinosaur.compilertools.net/bison/bison_6.html)
-*/
-							/* Cod C asociat fiecarei expresii + Scriere in fisierul de output.*/
 %%
 program_input:
 	| program_input line
@@ -214,7 +181,8 @@ assignment:
 		;
 %%
 
-/* Entry point */
+
+				/****************** punct de start *********************************/
 int main(int argc, char **argv)
 {
 	char* c = "";
@@ -253,8 +221,8 @@ int main(int argc, char **argv)
 	inchide_fisier();
 }
 
-/* Display error messages */
+/* Afiseaza mesaj de eroare */
 void yyerror(const char *s)
 {
-	printf("ERROR: %s\n", s);
+	printf("EROARE: %s\n la linia: %d", s, yylineno);
 }

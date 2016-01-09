@@ -166,7 +166,20 @@ extern FILE *yyin, *yyout;
 #define EOB_ACT_END_OF_FILE 1
 #define EOB_ACT_LAST_MATCH 2
 
-    #define YY_LESS_LINENO(n)
+    /* Note: We specifically omit the test for yy_rule_can_match_eol because it requires
+     *       access to the local variable yy_act. Since yyless() is a macro, it would break
+     *       existing scanners that call yyless() from OUTSIDE yylex. 
+     *       One obvious solution it to make yy_act a global. I tried that, and saw
+     *       a 5% performance hit in a non-yylineno scanner, because yy_act is
+     *       normally declared as a register variable-- so it is not worth it.
+     */
+    #define  YY_LESS_LINENO(n) \
+            do { \
+                int yyl;\
+                for ( yyl = n; yyl < yyleng; ++yyl )\
+                    if ( yytext[yyl] == '\n' )\
+                        --yylineno;\
+            }while(0)
     
 /* Return all but the first "n" matched characters back to the input stream. */
 #define yyless(n) \
@@ -622,6 +635,13 @@ static yyconst flex_int16_t yy_chk[483] =
       241,  241
     } ;
 
+/* Table of booleans, true if rule could match eol. */
+static yyconst flex_int32_t yy_rule_can_match_eol[46] =
+    {   0,
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 1, 0, 0,     };
+
 static yy_state_type yy_last_accepting_state;
 static char *yy_last_accepting_cpos;
 
@@ -648,17 +668,18 @@ char *yytext;
 
 /* fisier pentru cod output. Definifi in op_fisier.h*/
 extern FILE *f;
-/* Stop the error "undefined reference to 'yywrap'" from Flex */
-/* Grammar rules
-	[ \t] -- Match space or tab
+/* optiune pentru oprire eroare "undefined reference to 'yywrap'" de la Flex */
+/* optiune pentru numararea liniei curente in interpretare cu Flex */
+/* reguli de gramatica
+	[ \t] --spatiu sau tab
 	
-	[0-9]+(\.[0-9]+)?  -- Match any combination of numbers. Includes decimals. 
+	[0-9]+(\.[0-9]+)?  -- combinatii de numere 
 	
-	[a-zA-Z0-9]+ -- Match any combination of letters (lower and upper case) and numbers.
+	[a-zA-Z0-9]+ -- combinatii de litere (majuscule sau minuscule) si numere
 	
-	. -- Match any remaining character.
+	. 	-- orice alt caracter => EROARE
 */
-#line 662 "lex.yy.c"
+#line 683 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -840,9 +861,9 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 27 "lex.l"
+#line 29 "lex.l"
 
-#line 846 "lex.yy.c"
+#line 867 "lex.yy.c"
 
 	if ( !(yy_init) )
 		{
@@ -914,6 +935,16 @@ yy_find_action:
 
 		YY_DO_BEFORE_ACTION;
 
+		if ( yy_act != YY_END_OF_BUFFER && yy_rule_can_match_eol[yy_act] )
+			{
+			yy_size_t yyl;
+			for ( yyl = 0; yyl < yyleng; ++yyl )
+				if ( yytext[yyl] == '\n' )
+					   
+    yylineno++;
+;
+			}
+
 do_action:	/* This label is used only to access EOF actions. */
 
 		switch ( yy_act )
@@ -927,231 +958,231 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 28 "lex.l"
+#line 30 "lex.l"
 
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 29 "lex.l"
+#line 31 "lex.l"
 {  yylval.num = atof(yytext); return NUMBER; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 30 "lex.l"
+#line 32 "lex.l"
 { return ADD; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 31 "lex.l"
+#line 33 "lex.l"
 { return SUB; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 32 "lex.l"
+#line 34 "lex.l"
 { return MUL; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 33 "lex.l"
+#line 35 "lex.l"
 { return DIV; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 34 "lex.l"
+#line 36 "lex.l"
 { return MOD; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 35 "lex.l"
+#line 37 "lex.l"
 { return POW; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 36 "lex.l"
+#line 38 "lex.l"
 { return EQUALS; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 37 "lex.l"
+#line 39 "lex.l"
 { return L_BRACKET; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 38 "lex.l"
+#line 40 "lex.l"
 { return R_BRACKET; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 39 "lex.l"
+#line 41 "lex.l"
 { return FACTORIAL; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 40 "lex.l"
+#line 42 "lex.l"
 { return PI; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 41 "lex.l"
+#line 43 "lex.l"
 { return MOD; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 42 "lex.l"
+#line 44 "lex.l"
 {	return POW; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 43 "lex.l"
+#line 45 "lex.l"
 { return FLOOR; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 44 "lex.l"
+#line 46 "lex.l"
 { return CEIL; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 45 "lex.l"
+#line 47 "lex.l"
 { return ABS; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 46 "lex.l"
+#line 48 "lex.l"
 { return COS; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 47 "lex.l"
+#line 49 "lex.l"
 { return SIN; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 48 "lex.l"
+#line 50 "lex.l"
 { return TAN; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 49 "lex.l"
+#line 51 "lex.l"
 { return SINH; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 50 "lex.l"
+#line 52 "lex.l"
 { return COSH; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 51 "lex.l"
+#line 53 "lex.l"
 { return TANH; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 52 "lex.l"
+#line 54 "lex.l"
 { return SQRT; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 53 "lex.l"
+#line 55 "lex.l"
 { return LOG2; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 54 "lex.l"
+#line 56 "lex.l"
 { return LOG10; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 55 "lex.l"
+#line 57 "lex.l"
 { return GBP_TO_USD; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 56 "lex.l"
+#line 58 "lex.l"
 { return USD_TO_GBP; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 57 "lex.l"
+#line 59 "lex.l"
 { return GBP_TO_EURO; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 58 "lex.l"
+#line 60 "lex.l"
 { return EURO_TO_GBP; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 59 "lex.l"
+#line 61 "lex.l"
 { return USD_TO_EURO; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 60 "lex.l"
+#line 62 "lex.l"
 { return EURO_TO_USD; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 61 "lex.l"
+#line 63 "lex.l"
 { return CEL_TO_FAH; }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 62 "lex.l"
+#line 64 "lex.l"
 { return FAH_TO_CEL; }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 63 "lex.l"
+#line 65 "lex.l"
 { return KM_TO_M; }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 64 "lex.l"
+#line 66 "lex.l"
 { return M_TO_KM; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 65 "lex.l"
+#line 67 "lex.l"
 { return AFISEAZA; }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 66 "lex.l"
+#line 68 "lex.l"
 return STOP;
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 67 "lex.l"
+#line 69 "lex.l"
 return STOP;
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 68 "lex.l"
+#line 70 "lex.l"
 { return VAR_KEYWORD; }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 69 "lex.l"
+#line 71 "lex.l"
 { yylval.index = adauga_variabila(yytext); return VARIABLE; }
 	YY_BREAK
 case 43:
 /* rule 43 can match eol */
 YY_RULE_SETUP
-#line 70 "lex.l"
+#line 72 "lex.l"
 { return EOL; }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 71 "lex.l"
+#line 73 "lex.l"
 { yyerror("Simbol nedefinit"); exit(1); } 
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 72 "lex.l"
+#line 74 "lex.l"
 ECHO;
 	YY_BREAK
-#line 1155 "lex.yy.c"
+#line 1186 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1512,6 +1543,10 @@ static int yy_get_next_buffer (void)
 
 	*--yy_cp = (char) c;
 
+    if ( c == '\n' ){
+        --yylineno;
+    }
+
 	(yytext_ptr) = yy_bp;
 	(yy_hold_char) = *yy_cp;
 	(yy_c_buf_p) = yy_cp;
@@ -1586,6 +1621,11 @@ static int yy_get_next_buffer (void)
 	c = *(unsigned char *) (yy_c_buf_p);	/* cast for 8-bit char's */
 	*(yy_c_buf_p) = '\0';	/* preserve yytext */
 	(yy_hold_char) = *++(yy_c_buf_p);
+
+	if ( c == '\n' )
+		   
+    yylineno++;
+;
 
 	return c;
 }
@@ -2053,6 +2093,9 @@ static int yy_init_globals (void)
      * This function is called from yylex_destroy(), so don't allocate here.
      */
 
+    /* We do not touch yylineno unless the option is enabled. */
+    yylineno =  1;
+    
     (yy_buffer_stack) = 0;
     (yy_buffer_stack_top) = 0;
     (yy_buffer_stack_max) = 0;
@@ -2145,7 +2188,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 71 "lex.l"
+#line 73 "lex.l"
 
 
 

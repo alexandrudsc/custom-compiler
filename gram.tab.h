@@ -93,7 +93,7 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 2058 of yacc.c  */
-#line 34 "gram.y"
+#line 36 "gram.y"
 
 	int index;
 	double num;
