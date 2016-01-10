@@ -1,19 +1,22 @@
 %{
+						/************** ------ includere header-e; 			  ------- **********/
+						/************** ------ sectiunea trece neinterpretata ------- **********/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
 #include "func.h"
-#include "gram.tab.h"
+#include "gram.tab.h"	
 
-			/* fisier pentru cod output. Definifi in op_fisier.h*/
+			/* fisier pentru cod output. Definifit in op_fisier.h */
 extern FILE *f;
 
 			/* Stochez variabile. Definite in mem.h */
 extern double variabile_valori[100];
+extern char* variabile_cuvinte[100];
 extern int variable_set[100];
 
-			/* functii flex */
+			/* functii si variabile flex */
 extern int yylex(void);
 extern void yyterminate();
 void yyerror(const char *s);
@@ -22,7 +25,7 @@ extern FILE* yyin;
 extern int yylineno;
 %}
 
-						/**** declaratii bison ****/
+						/************** ------declaratii bison ------- **************/
 
 
 
@@ -30,26 +33,41 @@ extern int yylineno;
 %union {
 	int index;
 	double num;
+	char* str;
 }
 
 						/******* definire token-uri ******/
 
-%token<num> NUMBER
-%token<num> L_BRACKET R_BRACKET
-%token<num> DIV MUL ADD SUB EQUALS
+			/* token-uri aritmetica */
+%token<num> IMPARTIRE INMULTIRE ADUNARE SCADERE EGAL
 %token<num> PI
-%token<num> POW SQRT FACTORIAL MOD
+%token<num> PUTERE RAD FACTORIAL MOD
 %token<num> LOG2 LOG10
-%token<num> FLOOR CEIL ABS
-%token<num> GBP_TO_USD USD_TO_GBP 
-%token<num> GBP_TO_EURO EURO_TO_GBP 
-%token<num> USD_TO_EURO EURO_TO_USD
+%token<num> ROT_ADAUGARE ROT_SCADERE MODUL
 %token<num> COS SIN TAN COSH SINH TANH
-%token<num> CEL_TO_FAH FAH_TO_CEL
-%token<num> M_TO_KM KM_TO_M
+			/* token-uri aritmetica conversii monede */
+%token<num> GBP_IN_USD USD_IN_GBP 
+%token<num> GBP_IN_EURO EURO_IN_GBP 
+%token<num> USD_IN_EURO EURO_IN_USD
+			/* token-uri aritmetica conversii grade*/
+%token<num> CEL_IN_FAH FAH_IN_CEL
+			/* token-uri aritmetica conversii distanta*/
+%token<num> M_IN_KM KM_IN_M
+			
+			/* token-uri declarare variabile */
 %token<num> VAR_KEYWORD 
 %token<index> VARIABLE
+
+			/* token-uri tipuri de date */
+%token<num> NUMAR
+%token<str> CUVANT
+			
+			/* token-uri functii */
+
 %token      AFISEAZA
+
+			/* token-uri sintaxa */
+%token<num> L_BRACKET R_BRACKET
 %token<num> EOL
 %type<num> program_input
 %type<num> line
@@ -60,7 +78,7 @@ extern int yylineno;
 %type<num> log_function
 %type<num> trig_function
 %type<num> hyperbolic_function
-%type<num> assignment
+%type<num> atribuire
 %type<num> conversion
 %type<num> temperature_conversion
 %type<num> distance_conversion
@@ -68,19 +86,22 @@ extern int yylineno;
 %token STOP
 
 					/* token-uri structuri de control */
-
+%token IF WHILE FOR NEXT
 					/* token-uri precedenta operatorilor */
-%left SUB 
-%left ADD
-%left MUL 
-%left DIV 
-%left POW SQRT 
+%left SCADERE 
+%left ADUNARE
+%left INMULTIRE 
+%left IMPARTIRE 
+%left PUTERE RAD 
 %left L_BRACKET R_BRACKET
 
-
-		/********** Cod C asociat fiecarei expresii + Scriere in fisierul de output. ************/
-
 %%
+
+
+		/**********			Definire gramatica/expresii 									 ************/
+		/**********			Cod C asociat fiecarei expresii + Scriere in fisierul de output. ************/
+
+
 program_input:
 	| program_input line
 	;
@@ -91,98 +112,169 @@ line:
 							}
     ;
 
+calculations_compus:
+		'{' lista_calculation '}'
+
+lista_calculation: lista_calculation calculation
+		|
+		;
+
 calculation:
 		  expr
+		| structura_for
+		| structura_while
 		| function
-		| assignment
+		| atribuire
 		;
-		
+
+
+
 constant: PI { $$ = 3.142; }
 		;
 		
 expr:
-			SUB expr		{ $$ = -$2; }
-    	| NUMBER            { $$ = $1; 
-    						
-    						}
-		| VARIABLE			{ 
+			SCADERE expr			{ $$ = -$2; }
+    	| NUMAR            		{ $$ = $1; }
+
+		| VARIABLE				{ 
 								$$ = variabile_valori[$1]; 
-							}
+								}
 		| constant	
 		| function
-		| expr DIV expr     { if ($3 == 0) { yyerror("Cannot divide by zero"); exit(1); } else $$ = $1 / $3; }
-		| expr MUL expr     { $$ = $1 * $3; }
+		| expr IMPARTIRE expr     { if ($3 == 0) { yyerror("Cannot IMPARTIREide by zero"); exit(1); } else $$ = $1 / $3; }
+		| expr INMULTIRE expr     	{ $$ = $1 * $3; }
 		| L_BRACKET expr R_BRACKET { $$ = $2; }
-		| expr ADD expr     { $$ = $1 + $3; }
-		| expr SUB expr   	{ $$ = $1 - $3; }
-		| expr POW expr     { $$ = pow($1, $3); }
-		| expr MOD expr     { $$ = modulo($1, $3); }
-		| AFISEAZA VARIABLE 	{ 
+		| expr ADUNARE expr     	{ $$ = $1 + $3; }
+		| expr SCADERE expr   		{ $$ = $1 - $3; }
+		| expr PUTERE expr     	{ $$ = pow($1, $3); }
+		| expr MOD expr     	{ $$ = modulo($1, $3); }
+		| afisare_ecran				
+
+
+		| FOR
+		| STOP					{ 
+								fprintf(f, "exit()");
+								printf("salut :)\n"); exit(0); 
+								}
+    ;
+
+structura_for: FOR expr NEXT expr		
+
+structura_while: 	WHILE  expr  calculation
+					| WHILE expr calculations_compus
+					;
+
+afisare_ecran:	AFISEAZA VARIABLE { 
 								fprintf(f, "print %s\n", nume_variabila($2)); 
 								printf("%f\n", (float)variabile_valori[$2]);
 								}
-		| STOP				{ 
-							fprintf(f, "exit()");
-							printf("salut :)\n"); exit(0); }
-    ;
-		
+
+		| AFISEAZA NUMAR	 	{ 
+								fprintf(f, "print %f\n", (float)$2) ; 
+								printf("%f\n", (float)$2);
+								}
+		| AFISEAZA CUVANT	 	{ 
+								fprintf(f, "print %s\n", (char*)$2) ; 
+								printf("%s\n", (char*)$2);
+								}
+		| AFISEAZA function	 	{ 
+								fprintf(f, "print %s\n", $2) ; 
+								printf("%f\n", (float)$2);
+								}
+
+		;
+
+
 function: 
 			conversion
 		| log_function
 		| trig_function
 		| hyperbolic_function
-		|	SQRT expr      			{ $$ = sqrt($2); }
-		| expr FACTORIAL			{ $$ = factorial($1); }
-		| ABS expr 					{ $$ = abs($2); }
-		| FLOOR expr 				{ $$ = floor($2); }
-		| CEIL expr 				{ $$ = ceil($2); }
+		|	RAD expr      					{ $$ = sqrt($2);
+										 	fprintf(f, "math.sqrt (%.2f)\n", (float)$2) ;
+										 	}
+		| expr FACTORIAL					{ $$ = factorial($1);
+		 									fprintf(f, "math.factorial (%.2f)\n", (float)$1) ;
+										 	}
+		| MODUL expr 						{ $$ = abs($2);
+		 									fprintf(f, "math.fabs (%.2f)\n", (float)$2) ;
+										 	}
+		| ROT_ADAUGARE expr 				 {
+											 fprintf(f, "math.ceil(%.2f)\n", (double)$2);
+											 $$ = ceil($2); 
+											 }
+		| ROT_SCADERE expr 					{
+											fprintf(f, "math.floor(%.2f)\n", (double)$2);		 
+											$$ = floor($2); }
 		;
 
 trig_function:
-			COS expr  			  	{ $$ = cos($2); }
-		| SIN expr 					{ $$ = sin($2); }
-		| TAN expr 					{ $$ = tan($2); }
+			COS expr  			  	{ $$ = cos($2);
+		 							fprintf(f, "math.cos (%.2f)\n", (float)$2) ;
+									}
+		| SIN expr 					{ $$ = sin($2); 
+		 							fprintf(f, "math.sin (%.2f)\n", (float)$2) ;
+									}
+		| TAN expr 					{ $$ = tan($2);
+		 							fprintf(f, "math.tan (%.2f)\n", (float)$2) ;
+									}
 		;
 	
 log_function:
-			LOG2 expr 				{ $$ = log2($2); }
-		| LOG10 expr 				{ $$ = log10($2); }
+			LOG2 expr 				{ $$ = log2($2); 
+		 							fprintf(f, "math.log (%.2f, 2)\n", (float)$2) ;
+									}
+		| LOG10 expr 				{ $$ = log10($2); 
+		 							fprintf(f, "math.log (%.2f, 10)\n", (float)$2) ;
+									}
 		;
 		
 hyperbolic_function:
-			COSH expr  			  	{ $$ = cosh($2); }
-		| SINH expr 				{ $$ = sinh($2); }
-		| TANH expr 				{ $$ = tanh($2); }
+			COSH expr  			  	{ $$ = cosh($2);
+		 							fprintf(f, "math.cosh (%.2f)\n", (float)$2) ;
+									}
+		| SINH expr 				{ $$ = sinh($2); 
+		 							fprintf(f, "math.sinh (%.2f)\n", (float)$2) ;
+									}
+		| TANH expr 				{ $$ = tanh($2);
+		 							fprintf(f, "math.tanh (%.2f)\n", (float)$2) ;
+									}
 		;
 		
 conversion:
 		temperature_conversion
 		| distance_conversion
-		| expr GBP_TO_USD   { $$ = gbp_to_usd($1); }
-		| expr USD_TO_GBP   { $$ = usd_to_gbp($1); }
-		| expr GBP_TO_EURO  { $$ = gbp_to_euro($1); }
-		| expr EURO_TO_GBP  { $$ = euro_to_gbp($1); }
-		| expr USD_TO_EURO  { $$ = usd_to_euro($1); }
-		| expr EURO_TO_USD  { $$ = euro_to_usd($1); }
+		| expr GBP_IN_USD   { $$ = gbp_to_usd($1); }
+		| expr USD_IN_GBP   { $$ = usd_to_gbp($1); }
+		| expr GBP_IN_EURO  { $$ = gbp_to_euro($1); }
+		| expr EURO_IN_GBP  { $$ = euro_to_gbp($1); }
+		| expr USD_IN_EURO  { $$ = usd_to_euro($1); }
+		| expr EURO_IN_USD  { $$ = euro_to_usd($1); }
 		;
 
 temperature_conversion:
-			expr CEL_TO_FAH 	{ $$ = cel_to_fah($1); }
-		| expr FAH_TO_CEL 	{ $$ = fah_to_cel($1); }
+			expr CEL_IN_FAH 	{ $$ = cel_to_fah($1); }
+		| expr FAH_IN_CEL 		{ $$ = fah_to_cel($1); }
 
 distance_conversion:
-			expr M_TO_KM 			{ $$ = m_to_km($1); }
-		| expr KM_TO_M 			{ $$ = km_to_m($1); }
+			expr M_IN_KM 			{ $$ = m_to_km($1); }
+		| expr KM_IN_M 			{ $$ = km_to_m($1); }
 		
-assignment: 
-		VAR_KEYWORD VARIABLE EQUALS calculation { $$ = set_variabila($2, $4);
+atribuire: 
+		VAR_KEYWORD VARIABLE EGAL calculation { 
+												$$ = set_variabila($2, $4);
 												fprintf(f, "%s = %f \n", nume_variabila($2), (double)$4);
+												}
+		| VARIABLE EGAL calculation 			{ 
+												$$ = set_variabila($1, $3);
+												fprintf(f, "%s = %f \n", nume_variabila($1), (double)$3);
 												}
 		;
 %%
 
 
 				/****************** punct de start *********************************/
+
 int main(int argc, char **argv)
 {
 	char* c = "";
@@ -190,7 +282,9 @@ int main(int argc, char **argv)
 	// deschide fisier output
 	deschide_fisier("output.py");
 
-	fprintf(f, "%s\n%s\n\n\n", 	"#!/usr/bin/python", "import math");
+	// import module in python pentru operatii matematice, conversii monede si distante
+	fprintf(f, "%s\n%s\n%s\n%s\n\n\n", 	"#!/usr/bin/python", "import math", "import currency.converter",
+	"from measurement.measures import Distance");
 
 	//printf("Command line ASor File? (Enter C or F): ");
 	//scanf("%s", c);
@@ -220,6 +314,7 @@ int main(int argc, char **argv)
 
 	inchide_fisier();
 }
+
 
 /* Afiseaza mesaj de eroare */
 void yyerror(const char *s)

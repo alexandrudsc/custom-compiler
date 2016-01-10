@@ -8,13 +8,13 @@
 :clean
 	del gram.tab.c
 	del lex.yy.c
-	del calc.exe
+	del compilator.exe
 	GOTO :end
 
 :create
 	win_flex_bison-latest\win_bison.exe -d gram.y
 	win_flex_bison-latest\win_flex.exe lex.l
-	gcc gram.tab.c lex.yy.c -o calc
+	gcc gram.tab.c lex.yy.c -o compilator
 	GOTO :end
 
 :end

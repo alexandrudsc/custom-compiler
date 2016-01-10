@@ -46,45 +46,50 @@ extern int yydebug;
    /* Put the tokens into the symbol table, so that GDB and other debuggers
       know about them.  */
    enum yytokentype {
-     NUMBER = 258,
-     L_BRACKET = 259,
-     R_BRACKET = 260,
-     DIV = 261,
-     MUL = 262,
-     ADD = 263,
-     SUB = 264,
-     EQUALS = 265,
-     PI = 266,
-     POW = 267,
-     SQRT = 268,
-     FACTORIAL = 269,
-     MOD = 270,
-     LOG2 = 271,
-     LOG10 = 272,
-     FLOOR = 273,
-     CEIL = 274,
-     ABS = 275,
-     GBP_TO_USD = 276,
-     USD_TO_GBP = 277,
-     GBP_TO_EURO = 278,
-     EURO_TO_GBP = 279,
-     USD_TO_EURO = 280,
-     EURO_TO_USD = 281,
-     COS = 282,
-     SIN = 283,
-     TAN = 284,
-     COSH = 285,
-     SINH = 286,
-     TANH = 287,
-     CEL_TO_FAH = 288,
-     FAH_TO_CEL = 289,
-     M_TO_KM = 290,
-     KM_TO_M = 291,
-     VAR_KEYWORD = 292,
-     VARIABLE = 293,
-     AFISEAZA = 294,
-     EOL = 295,
-     STOP = 296
+     IMPARTIRE = 258,
+     INMULTIRE = 259,
+     ADUNARE = 260,
+     SCADERE = 261,
+     EGAL = 262,
+     PI = 263,
+     PUTERE = 264,
+     RAD = 265,
+     FACTORIAL = 266,
+     MOD = 267,
+     LOG2 = 268,
+     LOG10 = 269,
+     ROT_ADAUGARE = 270,
+     ROT_SCADERE = 271,
+     MODUL = 272,
+     COS = 273,
+     SIN = 274,
+     TAN = 275,
+     COSH = 276,
+     SINH = 277,
+     TANH = 278,
+     GBP_IN_USD = 279,
+     USD_IN_GBP = 280,
+     GBP_IN_EURO = 281,
+     EURO_IN_GBP = 282,
+     USD_IN_EURO = 283,
+     EURO_IN_USD = 284,
+     CEL_IN_FAH = 285,
+     FAH_IN_CEL = 286,
+     M_IN_KM = 287,
+     KM_IN_M = 288,
+     VAR_KEYWORD = 289,
+     VARIABLE = 290,
+     NUMAR = 291,
+     CUVANT = 292,
+     AFISEAZA = 293,
+     L_BRACKET = 294,
+     R_BRACKET = 295,
+     EOL = 296,
+     STOP = 297,
+     IF = 298,
+     WHILE = 299,
+     FOR = 300,
+     NEXT = 301
    };
 #endif
 
@@ -93,14 +98,15 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 2058 of yacc.c  */
-#line 36 "gram.y"
+#line 33 "gram.y"
 
 	int index;
 	double num;
+	char* str;
 
 
 /* Line 2058 of yacc.c  */
-#line 104 "gram.tab.h"
+#line 110 "gram.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

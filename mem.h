@@ -11,6 +11,8 @@ int variable_set[100];
 int variable_counter = 0; 
 // Valoare variabile
 double variabile_valori[100];
+// Valoare variabile string-uri
+char* variabile_cuvinte[100];
 
 /* Adauga o variabila in memorie */
 int adauga_variabila(char* var_name)
