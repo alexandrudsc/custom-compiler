@@ -1,30 +1,28 @@
-# Bison-Flex-Calculator
-CS Assignment - scientific calculator using Bison &amp; Flex, with additonal functionality implemented in C
+# Compilator-Bison-Flex
+Compilator pentru limbaj toy, cu parsare in python
 
-## Functionality 
-* Basic arithmetic following BODMAS rules e.g, 4 * (3 + 2) = 20
-* Standard functions (modulo, ceil, abs, floor) 
-* Logarithmic functions (log2, log10)
-* Trig functions (cos, sin, tan)
-* Hyperbolic functions (cosh, sinh, tanh)
-* Conversions (currency, temperature, distance) 
-* Variable stores (create and use your own variables. See example)
-* Can read input the command line or a file
+## Functionalitate 
+* Aritmetica
+* Functii aritmetice standard
+* Logaritm 2 si 10
+* Cos, sin, tan
+* Cosh, sinh, tan
+* Conversii (monede, distante)
+* Variabile
+* Interpretor live sau cu sursa din fisier
 
 
-## Requirements
-1. Bison (needs adding to PATH on windows)
-2. Flex (needs adding to PATH on windows)
+## Dependinte
+1. Bison 
+2. Flex
 3. gcc compiler
 
-## Compile and execute
+## Compilare si executare
 1. bison -d gram.y
 2. flex lex.l
-3. gcc gram.tab.c lex.yy.c -lm -o scientific-calc
-4. scientific-calc
+3. gcc gram.tab.c lex.yy.c -lm -o compilator
 
-## Compile using make.bat file:
-1. Add win_flex and win_bison to the project
-2. set GCC path 
-2. make
-3. make clean - delete all previous output
+
+## Compilare cu make.bat
+1. make
+2. compilator.exe
