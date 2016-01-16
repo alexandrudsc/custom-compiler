@@ -698,7 +698,7 @@ char *yytext;
 
 #include "op_fisier.h"
 
-/* fisier pentru cod output. Definifi in op_fisier.h*/
+/* fisier pentru cod output. Definifit in op_fisier.h*/
 extern FILE *f;
 /* optiune pentru oprire eroare "undefined reference to 'yywrap'" de la Flex */
 /* optiune pentru numararea liniei curente in interpretare cu Flex */
@@ -999,250 +999,253 @@ YY_RULE_SETUP
 case 2:
 YY_RULE_SETUP
 #line 33 "lex.l"
-{  yylval.num = atof(yytext); return NUMAR; }
+{  yylval.num = atof(yytext); 
+											fprintf(f, "%.2f", yylval.num); return NUMAR; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 34 "lex.l"
-{ return ADUNARE; }
+#line 35 "lex.l"
+{ fprintf(f, " + "); return ADUNARE; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 35 "lex.l"
-{ return SCADERE; }
+#line 36 "lex.l"
+{ fprintf(f, " - "); return SCADERE; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 36 "lex.l"
-{ return INMULTIRE; }
+#line 37 "lex.l"
+{ fprintf(f, " * "); return INMULTIRE; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 37 "lex.l"
-{ return IMPARTIRE; }
+#line 38 "lex.l"
+{ fprintf(f, " / "); return IMPARTIRE; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 38 "lex.l"
-{ return MOD; }
+#line 39 "lex.l"
+{ fprintf(f, " % ");return MOD; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 39 "lex.l"
-{ return PUTERE; }
+#line 40 "lex.l"
+{ fprintf(f, " math.pow"); return PUTERE; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 40 "lex.l"
-{ return EGAL; }
+#line 41 "lex.l"
+{ fprintf(f, " = "); return EGAL; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 41 "lex.l"
-{ return L_BRACKET; }
+#line 42 "lex.l"
+{ fprintf(f, " ( ");return L_BRACKET; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 42 "lex.l"
-{ return R_BRACKET; }
+#line 43 "lex.l"
+{ fprintf(f, " ) ");return R_BRACKET; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 43 "lex.l"
+#line 44 "lex.l"
 { return FACTORIAL; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 44 "lex.l"
+#line 45 "lex.l"
 { return PI; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 45 "lex.l"
+#line 46 "lex.l"
 { return MOD; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 46 "lex.l"
-{	return PUTERE; }
+#line 47 "lex.l"
+{ fprintf(f, " math.pow"); return PUTERE; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 47 "lex.l"
-{ return ROT_ADAUGARE; }
+#line 48 "lex.l"
+{ fprintf(f, " math.ceil"); return ROT_ADAUGARE; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 48 "lex.l"
-{ return ROT_SCADERE; }
+#line 49 "lex.l"
+{ fprintf(f, " math.floor"); return ROT_SCADERE; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 49 "lex.l"
-{ return MODUL; }
+#line 50 "lex.l"
+{ fprintf(f, " abs"); return MODUL; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 50 "lex.l"
-{ return COS; }
+#line 51 "lex.l"
+{ fprintf(f, " math.cos"); return COS; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 51 "lex.l"
-{ return SIN; }
+#line 52 "lex.l"
+{ fprintf(f, " math.sin"); return SIN; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 52 "lex.l"
-{ return TAN; }
+#line 53 "lex.l"
+{ fprintf(f, " math.tan"); return TAN; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 53 "lex.l"
-{ return SINH; }
+#line 54 "lex.l"
+{ fprintf(f, " math.sinh( "); return SINH; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 54 "lex.l"
-{ return COSH; }
+#line 55 "lex.l"
+{ fprintf(f, " math.cosh( "); return COSH; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 55 "lex.l"
-{ return TANH; }
+#line 56 "lex.l"
+{ fprintf(f, " math.tanh( "); return TANH; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 56 "lex.l"
-{ return RAD; }
+#line 57 "lex.l"
+{ fprintf(f, " math.sqrt( "); return RAD; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 57 "lex.l"
-{ return LOG2; }
+#line 58 "lex.l"
+{ fprintf(f, " math.log( "); return LOG2; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 58 "lex.l"
-{ return LOG10; }
+#line 59 "lex.l"
+{ fprintf(f, " math.log( "); return LOG10; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 59 "lex.l"
+#line 60 "lex.l"
 { return GBP_IN_USD; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 60 "lex.l"
+#line 61 "lex.l"
 { return USD_IN_GBP; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 61 "lex.l"
+#line 62 "lex.l"
 { return GBP_IN_EURO; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 62 "lex.l"
+#line 63 "lex.l"
 { return EURO_IN_GBP; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 63 "lex.l"
+#line 64 "lex.l"
 { return USD_IN_EURO; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 64 "lex.l"
+#line 65 "lex.l"
 { return EURO_IN_USD; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 65 "lex.l"
+#line 66 "lex.l"
 { return CEL_IN_FAH; }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 66 "lex.l"
+#line 67 "lex.l"
 { return FAH_IN_CEL; }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 67 "lex.l"
+#line 68 "lex.l"
 { return KM_IN_M; }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 68 "lex.l"
+#line 69 "lex.l"
 { return M_IN_KM; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 69 "lex.l"
-{ return AFISEAZA; }
+#line 70 "lex.l"
+{ fprintf(f, "print "); return AFISEAZA; }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 72 "lex.l"
-{return IF;}
+#line 73 "lex.l"
+{ fprintf(f, " if "); return IF;}
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 73 "lex.l"
-{return FOR;}
+#line 74 "lex.l"
+{ fprintf(f, " for ");  return FOR;}
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 74 "lex.l"
-{return NEXT;}
+#line 75 "lex.l"
+{ return NEXT;}
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 75 "lex.l"
-{return WHILE;}
+#line 76 "lex.l"
+{ fprintf(f, " while "); return WHILE;}
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 77 "lex.l"
-return STOP;
+#line 78 "lex.l"
+{ fprintf(f, "exit()"); return STOP;}
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 78 "lex.l"
-return STOP;
+#line 79 "lex.l"
+{ fprintf(f, "exit()"); return STOP;}
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 79 "lex.l"
+#line 80 "lex.l"
 { return VAR_KEYWORD; }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 81 "lex.l"
-{ yylval.index = adauga_variabila(yytext); return VARIABLE; }
+#line 82 "lex.l"
+{ yylval.index = adauga_variabila(yytext); 
+															fprintf(f, "%s", yytext);
+															return VARIABLE; }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 82 "lex.l"
-{ yylval.str = yytext; return CUVANT; }
+#line 86 "lex.l"
+{ yylval.str = yytext;  return CUVANT; }
 	YY_BREAK
 case 48:
 /* rule 48 can match eol */
 YY_RULE_SETUP
-#line 83 "lex.l"
-{ return EOL; }
+#line 87 "lex.l"
+{ fprintf(f, "\n"); return EOL; }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 85 "lex.l"
+#line 89 "lex.l"
 { yyerror("Simbol nedefinit"); exit(1); } 
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 86 "lex.l"
+#line 90 "lex.l"
 ECHO;
 	YY_BREAK
-#line 1246 "lex.yy.c"
+#line 1249 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2248,7 +2251,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 85 "lex.l"
+#line 89 "lex.l"
 
 
 

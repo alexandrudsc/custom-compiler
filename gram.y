@@ -108,7 +108,7 @@ program_input:
 	
 line: 
 			EOL 			{ printf("Introduceti o comanda:\n"); }
-		| calculation EOL  	{ //printf("%.2f\n", $1); 
+		| calculation EOL  	{ 
 							}
     ;
 
@@ -141,8 +141,8 @@ expr:
 								}
 		| constant	
 		| function
-		| expr IMPARTIRE expr     { if ($3 == 0) { yyerror("Cannot IMPARTIREide by zero"); exit(1); } else $$ = $1 / $3; }
-		| expr INMULTIRE expr     	{ $$ = $1 * $3; }
+		| expr IMPARTIRE expr     { if ($3 == 0) { yyerror("Nu se poate imaprti la 0"); exit(1); } else $$ = $1 							/ $3; }
+		| expr INMULTIRE expr     	{  $$ = $1 * $3;}
 		| L_BRACKET expr R_BRACKET { $$ = $2; }
 		| expr ADUNARE expr     	{ $$ = $1 + $3; }
 		| expr SCADERE expr   		{ $$ = $1 - $3; }
@@ -153,7 +153,6 @@ expr:
 
 		| FOR
 		| STOP					{ 
-								fprintf(f, "exit()");
 								printf("salut :)\n"); exit(0); 
 								}
     ;
@@ -165,20 +164,21 @@ structura_while: 	WHILE  expr  calculation
 					;
 
 afisare_ecran:	AFISEAZA VARIABLE { 
-								fprintf(f, "print %s\n", nume_variabila($2)); 
 								printf("%f\n", (float)variabile_valori[$2]);
 								}
 
 		| AFISEAZA NUMAR	 	{ 
-								fprintf(f, "print %f\n", (float)$2) ; 
 								printf("%f\n", (float)$2);
 								}
 		| AFISEAZA CUVANT	 	{ 
-								fprintf(f, "print %s\n", (char*)$2) ; 
 								printf("%s\n", (char*)$2);
 								}
 		| AFISEAZA function	 	{ 
-								fprintf(f, "print %s\n", $2) ; 
+								printf("%f\n", (float)$2);
+								}
+		| AFISEAZA expr ADUNARE expr
+								{
+								$2 = $2 + $4; 
 								printf("%f\n", (float)$2);
 								}
 
@@ -190,55 +190,28 @@ function:
 		| log_function
 		| trig_function
 		| hyperbolic_function
-		|	RAD expr      					{ $$ = sqrt($2);
-										 	fprintf(f, "math.sqrt (%.2f)\n", (float)$2) ;
-										 	}
-		| expr FACTORIAL					{ $$ = factorial($1);
-		 									fprintf(f, "math.factorial (%.2f)\n", (float)$1) ;
-										 	}
-		| MODUL expr 						{ $$ = abs($2);
-		 									fprintf(f, "math.fabs (%.2f)\n", (float)$2) ;
-										 	}
-		| ROT_ADAUGARE expr 				 {
-											 fprintf(f, "math.ceil(%.2f)\n", (double)$2);
-											 $$ = ceil($2); 
-											 }
-		| ROT_SCADERE expr 					{
-											fprintf(f, "math.floor(%.2f)\n", (double)$2);		 
-											$$ = floor($2); }
+		|	RAD expr      					{ $$ = sqrt($2); }
+		| expr FACTORIAL					{ $$ = factorial($1); }
+		| MODUL expr 						{ $$ = abs($2); }
+		| ROT_ADAUGARE expr 				{ $$ = ceil($2); }
+		| ROT_SCADERE expr 					{ $$ = floor($2); }
 		;
 
 trig_function:
-			COS expr  			  	{ $$ = cos($2);
-		 							fprintf(f, "math.cos (%.2f)\n", (float)$2) ;
-									}
-		| SIN expr 					{ $$ = sin($2); 
-		 							fprintf(f, "math.sin (%.2f)\n", (float)$2) ;
-									}
-		| TAN expr 					{ $$ = tan($2);
-		 							fprintf(f, "math.tan (%.2f)\n", (float)$2) ;
-									}
+			COS expr  			  	{ $$ = cos($2); }
+		| SIN expr 					{ $$ = sin($2); }
+		| TAN expr 					{ $$ = tan($2); }
 		;
 	
 log_function:
-			LOG2 expr 				{ $$ = log2($2); 
-		 							fprintf(f, "math.log (%.2f, 2)\n", (float)$2) ;
-									}
-		| LOG10 expr 				{ $$ = log10($2); 
-		 							fprintf(f, "math.log (%.2f, 10)\n", (float)$2) ;
-									}
+			LOG2 expr 				{ $$ = log2($2); }
+		| LOG10 expr 				{ $$ = log10($2); }
 		;
 		
 hyperbolic_function:
-			COSH expr  			  	{ $$ = cosh($2);
-		 							fprintf(f, "math.cosh (%.2f)\n", (float)$2) ;
-									}
-		| SINH expr 				{ $$ = sinh($2); 
-		 							fprintf(f, "math.sinh (%.2f)\n", (float)$2) ;
-									}
-		| TANH expr 				{ $$ = tanh($2);
-		 							fprintf(f, "math.tanh (%.2f)\n", (float)$2) ;
-									}
+			COSH expr  			  	{ $$ = cosh($2); }
+		| SINH expr 				{ $$ = sinh($2); }
+		| TANH expr 				{ $$ = tanh($2); }
 		;
 		
 conversion:
@@ -261,14 +234,8 @@ distance_conversion:
 		| expr KM_IN_M 			{ $$ = km_to_m($1); }
 		
 atribuire: 
-		VAR_KEYWORD VARIABLE EGAL calculation { 
-												$$ = set_variabila($2, $4);
-												fprintf(f, "%s = %f \n", nume_variabila($2), (double)$4);
-												}
-		| VARIABLE EGAL calculation 			{ 
-												$$ = set_variabila($1, $3);
-												fprintf(f, "%s = %f \n", nume_variabila($1), (double)$3);
-												}
+		VAR_KEYWORD VARIABLE EGAL calculation { $$ = set_variabila($2, $4);}
+		| VARIABLE EGAL calculation 			{$$ = set_variabila($1, $3);}
 		;
 %%
 
@@ -282,7 +249,7 @@ int main(int argc, char **argv)
 	// deschide fisier output
 	deschide_fisier("output.py");
 
-	// import module in python pentru operatii matematice, conversii monede si distante
+	// import modulele pentru operatii matematice, conversii monede si distante
 	fprintf(f, "%s\n%s\n%s\n%s\n\n\n", 	"#!/usr/bin/python", "import math", "import currency.converter",
 	"from measurement.measures import Distance");
 
