@@ -80,15 +80,15 @@ extern FILE *f;
 			/* Stochez variabile. Definite in mem.h */
 extern double variabile_valori[100];
 extern char* variabile_cuvinte[100];
-extern int variable_set[100];
+extern int VARIABILA_set[100];
 
 			/* functii si variabile flex */
-extern int yylex(void);
-extern void yyterminate();
-void yyerror(const char *s);
-extern FILE* yyin;
+extern int yylex(void);			//
+extern void yyterminate();		// functie apelata pentru terminare parsare
+void yyerror(const char *s);	// functie apelata la eroare de parsare
+extern FILE* yyin;				// pointer pentru fluxul de intrare
 
-extern int yylineno;
+extern int yylineno;			// numarul liniei - folosit la indicare eroare
 
 /* Line 371 of yacc.c  */
 #line 95 "gram.tab.c"
@@ -158,13 +158,13 @@ extern int yydebug;
      FAH_IN_CEL = 286,
      M_IN_KM = 287,
      KM_IN_M = 288,
-     VAR_KEYWORD = 289,
-     VARIABLE = 290,
+     VAR_DECLAR = 289,
+     VARIABILA = 290,
      NUMAR = 291,
      CUVANT = 292,
      AFISEAZA = 293,
-     L_BRACKET = 294,
-     R_BRACKET = 295,
+     PARANTEZA_S = 294,
+     PARANTEZA_D = 295,
      EOL = 296,
      STOP = 297,
      IF = 298,
@@ -536,8 +536,8 @@ static const yytype_uint8 yyrline[] =
      144,   145,   146,   147,   148,   149,   150,   151,   154,   155,
      160,   162,   163,   166,   170,   173,   176,   179,   189,   190,
      191,   192,   193,   194,   195,   196,   197,   201,   202,   203,
-     207,   208,   212,   213,   214,   218,   219,   220,   221,   222,
-     223,   224,   225,   229,   230,   233,   234,   237,   238
+     207,   213,   222,   223,   224,   228,   229,   230,   231,   232,
+     233,   234,   235,   239,   240,   243,   244,   247,   248
 };
 #endif
 
@@ -551,13 +551,13 @@ static const char *const yytname[] =
   "LOG10", "ROT_ADAUGARE", "ROT_SCADERE", "MODUL", "COS", "SIN", "TAN",
   "COSH", "SINH", "TANH", "GBP_IN_USD", "USD_IN_GBP", "GBP_IN_EURO",
   "EURO_IN_GBP", "USD_IN_EURO", "EURO_IN_USD", "CEL_IN_FAH", "FAH_IN_CEL",
-  "M_IN_KM", "KM_IN_M", "VAR_KEYWORD", "VARIABLE", "NUMAR", "CUVANT",
-  "AFISEAZA", "L_BRACKET", "R_BRACKET", "EOL", "STOP", "IF", "WHILE",
-  "FOR", "NEXT", "'{'", "'}'", "$accept", "program_input", "line",
-  "calculations_compus", "lista_calculation", "calculation", "constant",
-  "expr", "structura_for", "structura_while", "afisare_ecran", "function",
-  "trig_function", "log_function", "hyperbolic_function", "conversion",
-  "temperature_conversion", "distance_conversion", "atribuire", YY_NULL
+  "M_IN_KM", "KM_IN_M", "VAR_DECLAR", "VARIABILA", "NUMAR", "CUVANT",
+  "AFISEAZA", "PARANTEZA_S", "PARANTEZA_D", "EOL", "STOP", "IF", "WHILE",
+  "FOR", "NEXT", "'{'", "'}'", "$accept", "program_input", "linie",
+  "linie_execs_compus", "lista_linie_exec", "linie_exec", "constant",
+  "expr", "structura_for", "structura_while", "afisare_ecran", "functie",
+  "functii_trig", "logaritm", "functii_hiper", "conversie",
+  "conv_temperatura", "conv_distanta", "atribuire", YY_NULL
 };
 #endif
 
@@ -1781,108 +1781,118 @@ yyreduce:
   case 50:
 /* Line 1792 of yacc.c  */
 #line 207 "gram.y"
-    { (yyval.num) = log2((yyvsp[(2) - (2)].num)); }
+    { 
+									fseek(f, -4, SEEK_CUR);				// formatez functia log cu baza 2 din
+									 									// modulul math
+									fprintf(f, ", 2)\n"); 
+									(yyval.num) = log2((yyvsp[(2) - (2)].num)); 
+									}
     break;
 
   case 51:
 /* Line 1792 of yacc.c  */
-#line 208 "gram.y"
-    { (yyval.num) = log10((yyvsp[(2) - (2)].num)); }
+#line 213 "gram.y"
+    { 
+									fseek(f, -4, SEEK_CUR);				// formatez functia log cu baza 10s 
+																		// din modulul math
+									fprintf(f, ", 10)\n");
+									(yyval.num) = log10((yyvsp[(2) - (2)].num)); 
+									}
     break;
 
   case 52:
 /* Line 1792 of yacc.c  */
-#line 212 "gram.y"
+#line 222 "gram.y"
     { (yyval.num) = cosh((yyvsp[(2) - (2)].num)); }
     break;
 
   case 53:
 /* Line 1792 of yacc.c  */
-#line 213 "gram.y"
+#line 223 "gram.y"
     { (yyval.num) = sinh((yyvsp[(2) - (2)].num)); }
     break;
 
   case 54:
 /* Line 1792 of yacc.c  */
-#line 214 "gram.y"
+#line 224 "gram.y"
     { (yyval.num) = tanh((yyvsp[(2) - (2)].num)); }
     break;
 
   case 57:
 /* Line 1792 of yacc.c  */
-#line 220 "gram.y"
+#line 230 "gram.y"
     { (yyval.num) = gbp_to_usd((yyvsp[(1) - (2)].num)); }
     break;
 
   case 58:
 /* Line 1792 of yacc.c  */
-#line 221 "gram.y"
+#line 231 "gram.y"
     { (yyval.num) = usd_to_gbp((yyvsp[(1) - (2)].num)); }
     break;
 
   case 59:
 /* Line 1792 of yacc.c  */
-#line 222 "gram.y"
+#line 232 "gram.y"
     { (yyval.num) = gbp_to_euro((yyvsp[(1) - (2)].num)); }
     break;
 
   case 60:
 /* Line 1792 of yacc.c  */
-#line 223 "gram.y"
+#line 233 "gram.y"
     { (yyval.num) = euro_to_gbp((yyvsp[(1) - (2)].num)); }
     break;
 
   case 61:
 /* Line 1792 of yacc.c  */
-#line 224 "gram.y"
+#line 234 "gram.y"
     { (yyval.num) = usd_to_euro((yyvsp[(1) - (2)].num)); }
     break;
 
   case 62:
 /* Line 1792 of yacc.c  */
-#line 225 "gram.y"
+#line 235 "gram.y"
     { (yyval.num) = euro_to_usd((yyvsp[(1) - (2)].num)); }
     break;
 
   case 63:
 /* Line 1792 of yacc.c  */
-#line 229 "gram.y"
+#line 239 "gram.y"
     { (yyval.num) = cel_to_fah((yyvsp[(1) - (2)].num)); }
     break;
 
   case 64:
 /* Line 1792 of yacc.c  */
-#line 230 "gram.y"
+#line 240 "gram.y"
     { (yyval.num) = fah_to_cel((yyvsp[(1) - (2)].num)); }
     break;
 
   case 65:
 /* Line 1792 of yacc.c  */
-#line 233 "gram.y"
+#line 243 "gram.y"
     { (yyval.num) = m_to_km((yyvsp[(1) - (2)].num)); }
     break;
 
   case 66:
 /* Line 1792 of yacc.c  */
-#line 234 "gram.y"
+#line 244 "gram.y"
     { (yyval.num) = km_to_m((yyvsp[(1) - (2)].num)); }
     break;
 
   case 67:
 /* Line 1792 of yacc.c  */
-#line 237 "gram.y"
+#line 247 "gram.y"
     { (yyval.num) = set_variabila((yyvsp[(2) - (4)].index), (yyvsp[(4) - (4)].num));}
     break;
 
   case 68:
 /* Line 1792 of yacc.c  */
-#line 238 "gram.y"
+#line 248 "gram.y"
     {(yyval.num) = set_variabila((yyvsp[(1) - (3)].index), (yyvsp[(3) - (3)].num));}
     break;
 
 
 /* Line 1792 of yacc.c  */
-#line 1886 "gram.tab.c"
+#line 1896 "gram.tab.c"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2114,7 +2124,7 @@ yyreturn:
 
 
 /* Line 2055 of yacc.c  */
-#line 240 "gram.y"
+#line 250 "gram.y"
 
 
 
@@ -2124,40 +2134,40 @@ int main(int argc, char **argv)
 {
 	char* c = "";
 
-	// deschide fisier output
-	deschide_fisier("output.py");
+	c = (char*)malloc(sizeof(char) * 100);		//sir de caractere alocat dinamic: pentru citire
+
 
 	// import modulele pentru operatii matematice, conversii monede si distante
 	fprintf(f, "%s\n%s\n%s\n%s\n\n\n", 	"#!/usr/bin/python", "import math", "import currency.converter",
 	"from measurement.measures import Distance");
 
-	//printf("Command line ASor File? (Enter C or F): ");
-	//scanf("%s", c);
-	
+	if (argc > 1) {										// Compilare de fisier
+		
+		// deschidere fisier output de cod python
+		if (argc > 2)
+			deschide_fisier(strcat(argv[2], ".py"));
+		else
+			deschide_fisier("cod_python.py");
 
-	if (strcmp(c, "f")==0 || strcmp(c, "F")==0) {
-		// File input
-		printf("Ok, please tell me the name of the file: ");
-		scanf("%s", c);
-
-		yyin = fopen(c, "r");
+		yyin = fopen(argv[1], "r");
 		if (!yyin) {
-			printf("ERROR: Couldn't open file %s\n", c);
+			printf("Eroare la deschidere fisier %s\n", argv[1]);
 			exit(-1);
 		}
+
 		yyparse();
-		
-		printf("All done with %s\n", c);
+		printf("Compilare cu succes: %s\n", argv[1]);
 	}
-	else {
-		// Command line
-		printf("Ok, command line it is!\n");
-		
+	else {												// Compilare cod din linia de comanda
+		// deschidere fisier output de cod python
+		deschide_fisier("cod_python.py");
+
 		yyin = stdin;
 		yyparse();
 	}
 
-	inchide_fisier();
+	inchide_fisier();				// inchid fisierul de output pentru cod python
+	free(c);						// eliberez pointer-ul alocat dinamic
 }
 
 

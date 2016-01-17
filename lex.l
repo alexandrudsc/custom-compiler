@@ -37,26 +37,26 @@ extern FILE *f;
 "*"                         					{ fprintf(f, " * "); return INMULTIRE; }
 "/"                         					{ fprintf(f, " / "); return IMPARTIRE; }
 "%"												{ fprintf(f, " % ");return MOD; }
-"^"                         					{ fprintf(f, " math.pow"); return PUTERE; }
+"^"                         					{ fprintf(f, "math.pow"); return PUTERE; }
 "="												{ fprintf(f, " = "); return EGAL; }
-"("												{ fprintf(f, " ( ");return L_BRACKET; }
-")"												{ fprintf(f, " ) ");return R_BRACKET; }
+"("												{ fprintf(f, " ( ");return PARANTEZA_S; }
+")"												{ fprintf(f, " ) ");return PARANTEZA_D; }
 "!"                         					{ return FACTORIAL; }
 ("pi")|("PI")											{ return PI; }
 ("mod")|("MOD")											{ return MOD; }
-("PUTERE")|("PUTERE")									{ fprintf(f, " math.pow"); return PUTERE; }
-("|sus")|("ROT_ADAUGARE")				  				{ fprintf(f, " math.ceil"); return ROT_ADAUGARE; }
-("|jos")|("ROT_SCADERE")								{ fprintf(f, " math.floor"); return ROT_SCADERE; }
-("MODUL")|("MODUL")											{ fprintf(f, " abs"); return MODUL; }
-("cos")|("COS")												{ fprintf(f, " math.cos"); return COS; }
-("sin")|("SIN")												{ fprintf(f, " math.sin"); return SIN; }
-("tan")|("TAN")												{ fprintf(f, " math.tan"); return TAN; }
-("sinh")|("SINH")											{ fprintf(f, " math.sinh( "); return SINH; }
-("cosh")|("COSH")											{ fprintf(f, " math.cosh( "); return COSH; }
-("tanh")|("TANH")											{ fprintf(f, " math.tanh( "); return TANH; }
-("RAD")|("RAD")												{ fprintf(f, " math.sqrt( "); return RAD; }
-("log2")|("LOG2")											{ fprintf(f, " math.log( "); return LOG2; }
-("log10")|("LOG10")											{ fprintf(f, " math.log( "); return LOG10; }
+("PUTERE")|("PUTERE")									{ fprintf(f, "math.pow"); return PUTERE; }
+("|sus")|("ROT_ADAUGARE")				  				{ fprintf(f, "math.ceil"); return ROT_ADAUGARE; }
+("|jos")|("ROT_SCADERE")								{ fprintf(f, "math.floor"); return ROT_SCADERE; }
+("MODUL")|("MODUL")											{ fprintf(f, "abs"); return MODUL; }
+("cos")|("COS")												{ fprintf(f, "math.cos"); return COS; }
+("sin")|("SIN")												{ fprintf(f, "math.sin"); return SIN; }
+("tan")|("TAN")												{ fprintf(f, "math.tan"); return TAN; }
+("sinh")|("SINH")											{ fprintf(f, "math.sinh"); return SINH; }
+("cosh")|("COSH")											{ fprintf(f, "math.cosh"); return COSH; }
+("tanh")|("TANH")											{ fprintf(f, "math.tanh"); return TANH; }
+("RAD")|("RAD")												{ fprintf(f, "math.sqrt"); return RAD; }
+("log2")|("LOG2")											{ fprintf(f, "math.log"); return LOG2; }
+("log10")|("LOG10")											{ fprintf(f, "math.log"); return LOG10; }
 ("gbp_in_usd")|("GBP_IN_USD")					{ return GBP_IN_USD; }
 ("usd_in_gbp")|("USD_IN_GBP")					{ return USD_IN_GBP; }
 ("gbp_in_euro")|("GBP_IN_EURO")				{ return GBP_IN_EURO; }
@@ -77,11 +77,12 @@ extern FILE *f;
 
 "gata"												{ fprintf(f, "exit()"); return STOP;}
 "stop"												{ fprintf(f, "exit()"); return STOP;}
-("var")|("VAR")												{ return VAR_KEYWORD; }
+("var")|("VAR")												{ return VAR_DECLAR; }
 
-[a-zA-Z0-9]+  												{ yylval.index = adauga_variabila(yytext); 
+[a-zA-Z0-9]+  												{ 
+															yylval.index = adauga_variabila(yytext); 
 															fprintf(f, "%s", yytext);
-															return VARIABLE; }
+															return VARIABILA; }
 
 ["a-zA-Z0-9"]+												{ yylval.str = yytext;  return CUVANT; }
 [\n]                        								{ fprintf(f, "\n"); return EOL; }

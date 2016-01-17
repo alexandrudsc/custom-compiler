@@ -1030,7 +1030,7 @@ YY_RULE_SETUP
 case 8:
 YY_RULE_SETUP
 #line 40 "lex.l"
-{ fprintf(f, " math.pow"); return PUTERE; }
+{ fprintf(f, "math.pow"); return PUTERE; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
@@ -1040,12 +1040,12 @@ YY_RULE_SETUP
 case 10:
 YY_RULE_SETUP
 #line 42 "lex.l"
-{ fprintf(f, " ( ");return L_BRACKET; }
+{ fprintf(f, " ( ");return PARANTEZA_S; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
 #line 43 "lex.l"
-{ fprintf(f, " ) ");return R_BRACKET; }
+{ fprintf(f, " ) ");return PARANTEZA_D; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
@@ -1065,67 +1065,67 @@ YY_RULE_SETUP
 case 15:
 YY_RULE_SETUP
 #line 47 "lex.l"
-{ fprintf(f, " math.pow"); return PUTERE; }
+{ fprintf(f, "math.pow"); return PUTERE; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
 #line 48 "lex.l"
-{ fprintf(f, " math.ceil"); return ROT_ADAUGARE; }
+{ fprintf(f, "math.ceil"); return ROT_ADAUGARE; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
 #line 49 "lex.l"
-{ fprintf(f, " math.floor"); return ROT_SCADERE; }
+{ fprintf(f, "math.floor"); return ROT_SCADERE; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
 #line 50 "lex.l"
-{ fprintf(f, " abs"); return MODUL; }
+{ fprintf(f, "abs"); return MODUL; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
 #line 51 "lex.l"
-{ fprintf(f, " math.cos"); return COS; }
+{ fprintf(f, "math.cos"); return COS; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
 #line 52 "lex.l"
-{ fprintf(f, " math.sin"); return SIN; }
+{ fprintf(f, "math.sin"); return SIN; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
 #line 53 "lex.l"
-{ fprintf(f, " math.tan"); return TAN; }
+{ fprintf(f, "math.tan"); return TAN; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
 #line 54 "lex.l"
-{ fprintf(f, " math.sinh( "); return SINH; }
+{ fprintf(f, "math.sinh"); return SINH; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
 #line 55 "lex.l"
-{ fprintf(f, " math.cosh( "); return COSH; }
+{ fprintf(f, "math.cosh"); return COSH; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
 #line 56 "lex.l"
-{ fprintf(f, " math.tanh( "); return TANH; }
+{ fprintf(f, "math.tanh"); return TANH; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
 #line 57 "lex.l"
-{ fprintf(f, " math.sqrt( "); return RAD; }
+{ fprintf(f, "math.sqrt"); return RAD; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
 #line 58 "lex.l"
-{ fprintf(f, " math.log( "); return LOG2; }
+{ fprintf(f, "math.log"); return LOG2; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
 #line 59 "lex.l"
-{ fprintf(f, " math.log( "); return LOG10; }
+{ fprintf(f, "math.log"); return LOG10; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
@@ -1215,37 +1215,38 @@ YY_RULE_SETUP
 case 45:
 YY_RULE_SETUP
 #line 80 "lex.l"
-{ return VAR_KEYWORD; }
+{ return VAR_DECLAR; }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
 #line 82 "lex.l"
-{ yylval.index = adauga_variabila(yytext); 
+{ 
+															yylval.index = adauga_variabila(yytext); 
 															fprintf(f, "%s", yytext);
-															return VARIABLE; }
+															return VARIABILA; }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 86 "lex.l"
+#line 87 "lex.l"
 { yylval.str = yytext;  return CUVANT; }
 	YY_BREAK
 case 48:
 /* rule 48 can match eol */
 YY_RULE_SETUP
-#line 87 "lex.l"
+#line 88 "lex.l"
 { fprintf(f, "\n"); return EOL; }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 89 "lex.l"
+#line 90 "lex.l"
 { yyerror("Simbol nedefinit"); exit(1); } 
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 90 "lex.l"
+#line 91 "lex.l"
 ECHO;
 	YY_BREAK
-#line 1249 "lex.yy.c"
+#line 1250 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2251,7 +2252,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 89 "lex.l"
+#line 90 "lex.l"
 
 
 

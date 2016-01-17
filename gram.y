@@ -14,15 +14,16 @@ extern FILE *f;
 			/* Stochez variabile. Definite in mem.h */
 extern double variabile_valori[100];
 extern char* variabile_cuvinte[100];
-extern int variable_set[100];
+extern int VARIABILA_set[100];
 
 			/* functii si variabile flex */
-extern int yylex(void);
-extern void yyterminate();
-void yyerror(const char *s);
-extern FILE* yyin;
+extern int yylex(void);			// functie apelata pentru recunoastere token-uri din input si returnare la
+								// parser 
+extern void yyterminate();		// functie apelata pentru terminare parsare
+void yyerror(const char *s);	// functie apelata la eroare de parsare
+extern FILE* yyin;				// pointer pentru fluxul de intrare
 
-extern int yylineno;
+extern int yylineno;			// numarul liniei - folosit la indicare eroare
 %}
 
 						/************** ------declaratii bison ------- **************/
@@ -55,8 +56,8 @@ extern int yylineno;
 %token<num> M_IN_KM KM_IN_M
 			
 			/* token-uri declarare variabile */
-%token<num> VAR_KEYWORD 
-%token<index> VARIABLE
+%token<num> VAR_DECLAR 
+%token<index> VARIABILA
 
 			/* token-uri tipuri de date */
 %token<num> NUMAR
@@ -67,21 +68,21 @@ extern int yylineno;
 %token      AFISEAZA
 
 			/* token-uri sintaxa */
-%token<num> L_BRACKET R_BRACKET
+%token<num> PARANTEZA_S PARANTEZA_D
 %token<num> EOL
 %type<num> program_input
-%type<num> line
-%type<num> calculation
+%type<num> linie
+%type<num> linie_exec
 %type<num> constant
 %type<num> expr
-%type<num> function
-%type<num> log_function
-%type<num> trig_function
-%type<num> hyperbolic_function
+%type<num> functie
+%type<num> logaritm
+%type<num> functii_trig
+%type<num> functii_hiper
 %type<num> atribuire
-%type<num> conversion
-%type<num> temperature_conversion
-%type<num> distance_conversion
+%type<num> conversie
+%type<num> conv_temperatura
+%type<num> conv_distanta
 
 %token STOP
 
@@ -93,7 +94,7 @@ extern int yylineno;
 %left INMULTIRE 
 %left IMPARTIRE 
 %left PUTERE RAD 
-%left L_BRACKET R_BRACKET
+%left PARANTEZA_S PARANTEZA_D
 
 %%
 
@@ -103,27 +104,26 @@ extern int yylineno;
 
 
 program_input:
-	| program_input line
+	| program_input linie
 	;
 	
-line: 
+linie: 
 			EOL 			{ printf("Introduceti o comanda:\n"); }
-		| calculation EOL  	{ 
-							}
+		| linie_exec EOL  	{ }
     ;
 
-calculations_compus:
-		'{' lista_calculation '}'
+linie_execs_compus:
+		'{' lista_linie_exec '}'
 
-lista_calculation: lista_calculation calculation
+lista_linie_exec: lista_linie_exec linie_exec
 		|
 		;
 
-calculation:
+linie_exec:
 		  expr
 		| structura_for
 		| structura_while
-		| function
+		| functie
 		| atribuire
 		;
 
@@ -136,14 +136,14 @@ expr:
 			SCADERE expr			{ $$ = -$2; }
     	| NUMAR            		{ $$ = $1; }
 
-		| VARIABLE				{ 
+		| VARIABILA				{ 
 								$$ = variabile_valori[$1]; 
 								}
 		| constant	
-		| function
+		| functie
 		| expr IMPARTIRE expr     { if ($3 == 0) { yyerror("Nu se poate imaprti la 0"); exit(1); } else $$ = $1 							/ $3; }
 		| expr INMULTIRE expr     	{  $$ = $1 * $3;}
-		| L_BRACKET expr R_BRACKET { $$ = $2; }
+		| PARANTEZA_S expr PARANTEZA_D { $$ = $2; }
 		| expr ADUNARE expr     	{ $$ = $1 + $3; }
 		| expr SCADERE expr   		{ $$ = $1 - $3; }
 		| expr PUTERE expr     	{ $$ = pow($1, $3); }
@@ -159,11 +159,11 @@ expr:
 
 structura_for: FOR expr NEXT expr		
 
-structura_while: 	WHILE  expr  calculation
-					| WHILE expr calculations_compus
+structura_while: 	WHILE  expr  linie_exec
+					| WHILE expr linie_execs_compus
 					;
 
-afisare_ecran:	AFISEAZA VARIABLE { 
+afisare_ecran:	AFISEAZA VARIABILA { 
 								printf("%f\n", (float)variabile_valori[$2]);
 								}
 
@@ -173,7 +173,7 @@ afisare_ecran:	AFISEAZA VARIABLE {
 		| AFISEAZA CUVANT	 	{ 
 								printf("%s\n", (char*)$2);
 								}
-		| AFISEAZA function	 	{ 
+		| AFISEAZA functie	 	{ 
 								printf("%f\n", (float)$2);
 								}
 		| AFISEAZA expr ADUNARE expr
@@ -185,11 +185,11 @@ afisare_ecran:	AFISEAZA VARIABLE {
 		;
 
 
-function: 
-			conversion
-		| log_function
-		| trig_function
-		| hyperbolic_function
+functie: 
+			conversie
+		| logaritm
+		| functii_trig
+		| functii_hiper
 		|	RAD expr      					{ $$ = sqrt($2); }
 		| expr FACTORIAL					{ $$ = factorial($1); }
 		| MODUL expr 						{ $$ = abs($2); }
@@ -197,26 +197,36 @@ function:
 		| ROT_SCADERE expr 					{ $$ = floor($2); }
 		;
 
-trig_function:
+functii_trig:
 			COS expr  			  	{ $$ = cos($2); }
 		| SIN expr 					{ $$ = sin($2); }
 		| TAN expr 					{ $$ = tan($2); }
 		;
 	
-log_function:
-			LOG2 expr 				{ $$ = log2($2); }
-		| LOG10 expr 				{ $$ = log10($2); }
+logaritm:
+			LOG2 expr 				{ 
+									fseek(f, -4, SEEK_CUR);				// formatez functia log cu baza 2 din
+									 									// modulul math
+									fprintf(f, ", 2)\n"); 
+									$$ = log2($2); 
+									}
+		| LOG10 expr 				{ 
+									fseek(f, -4, SEEK_CUR);				// formatez functia log cu baza 10s 
+																		// din modulul math
+									fprintf(f, ", 10)\n");
+									$$ = log10($2); 
+									}
 		;
 		
-hyperbolic_function:
+functii_hiper:
 			COSH expr  			  	{ $$ = cosh($2); }
 		| SINH expr 				{ $$ = sinh($2); }
 		| TANH expr 				{ $$ = tanh($2); }
 		;
 		
-conversion:
-		temperature_conversion
-		| distance_conversion
+conversie:
+		conv_temperatura
+		| conv_distanta
 		| expr GBP_IN_USD   { $$ = gbp_to_usd($1); }
 		| expr USD_IN_GBP   { $$ = usd_to_gbp($1); }
 		| expr GBP_IN_EURO  { $$ = gbp_to_euro($1); }
@@ -225,17 +235,17 @@ conversion:
 		| expr EURO_IN_USD  { $$ = euro_to_usd($1); }
 		;
 
-temperature_conversion:
+conv_temperatura:
 			expr CEL_IN_FAH 	{ $$ = cel_to_fah($1); }
 		| expr FAH_IN_CEL 		{ $$ = fah_to_cel($1); }
 
-distance_conversion:
+conv_distanta:
 			expr M_IN_KM 			{ $$ = m_to_km($1); }
 		| expr KM_IN_M 			{ $$ = km_to_m($1); }
 		
 atribuire: 
-		VAR_KEYWORD VARIABLE EGAL calculation { $$ = set_variabila($2, $4);}
-		| VARIABLE EGAL calculation 			{$$ = set_variabila($1, $3);}
+		VAR_DECLAR VARIABILA EGAL linie_exec { $$ = set_variabila($2, $4);}
+		| VARIABILA EGAL linie_exec 			{$$ = set_variabila($1, $3);}
 		;
 %%
 
@@ -246,40 +256,40 @@ int main(int argc, char **argv)
 {
 	char* c = "";
 
-	// deschide fisier output
-	deschide_fisier("output.py");
+	c = (char*)malloc(sizeof(char) * 100);		//sir de caractere alocat dinamic: pentru citire
+
 
 	// import modulele pentru operatii matematice, conversii monede si distante
 	fprintf(f, "%s\n%s\n%s\n%s\n\n\n", 	"#!/usr/bin/python", "import math", "import currency.converter",
 	"from measurement.measures import Distance");
 
-	//printf("Command line ASor File? (Enter C or F): ");
-	//scanf("%s", c);
-	
+	if (argc > 1) {										// Compilare de fisier
+		
+		// deschidere fisier output de cod python
+		if (argc > 2)
+			deschide_fisier(strcat(argv[2], ".py"));
+		else
+			deschide_fisier("cod_python.py");
 
-	if (strcmp(c, "f")==0 || strcmp(c, "F")==0) {
-		// File input
-		printf("Ok, please tell me the name of the file: ");
-		scanf("%s", c);
-
-		yyin = fopen(c, "r");
+		yyin = fopen(argv[1], "r");
 		if (!yyin) {
-			printf("ERROR: Couldn't open file %s\n", c);
+			printf("Eroare la deschidere fisier %s\n", argv[1]);
 			exit(-1);
 		}
+
 		yyparse();
-		
-		printf("All done with %s\n", c);
+		printf("Compilare cu succes: %s\n", argv[1]);
 	}
-	else {
-		// Command line
-		printf("Ok, command line it is!\n");
-		
+	else {												// Compilare cod din linia de comanda
+		// deschidere fisier output de cod python
+		deschide_fisier("cod_python.py");
+
 		yyin = stdin;
 		yyparse();
 	}
 
-	inchide_fisier();
+	inchide_fisier();				// inchid fisierul de output pentru cod python
+	free(c);						// eliberez pointer-ul alocat dinamic
 }
 
 

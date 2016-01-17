@@ -1,4 +1,13 @@
-4 + 2*10 + 3*( 5 + 1 )
-5 + 5
-VAR x = 10
-x * 2
+var x = 20
+x = x + 0.4
+-> x
+x = log2(4)
+-> x
+x = x - 0.2346
+-> xRotAd
+xRotAd = |sus(x)
+-> xRotAd
+xRotSc = |jos(x)
+-> xRotSc
+stop
+print 10123
