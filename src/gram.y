@@ -1,12 +1,14 @@
 %{
 						/************** ------ includere header-e; 			  ------- **********/
-						/************** ------ sectiunea trece neinterpretata ------- **********/
+						/************** ------ sectiunea trece neinterpretata de bison ------- **********/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
 #include "func.h"
 #include "gram.tab.h"	
+
+int tastatura = 1;		/* daca inputul este de la tastatura sau nu */
 
 			/* fisier pentru cod output. Definifit in op_fisier.h */
 extern FILE *f;
@@ -46,13 +48,8 @@ extern int yylineno;			// numarul liniei - folosit la indicare eroare
 %token<num> LOG2 LOG10
 %token<num> ROT_ADAUGARE ROT_SCADERE MODUL
 %token<num> COS SIN TAN COSH SINH TANH
-			/* token-uri aritmetica conversii monede */
-%token<num> GBP_IN_USD USD_IN_GBP 
-%token<num> GBP_IN_EURO EURO_IN_GBP 
-%token<num> USD_IN_EURO EURO_IN_USD
-			/* token-uri aritmetica conversii grade*/
-%token<num> CEL_IN_FAH FAH_IN_CEL
-			/* token-uri aritmetica conversii distanta*/
+
+			/* token-uri conversii distanta*/
 %token<num> M_IN_KM KM_IN_M
 			
 			/* token-uri declarare variabile */
@@ -64,7 +61,6 @@ extern int yylineno;			// numarul liniei - folosit la indicare eroare
 %token<str> CUVANT
 			
 			/* token-uri functii */
-
 %token      AFISEAZA
 
 			/* token-uri sintaxa */
@@ -81,7 +77,6 @@ extern int yylineno;			// numarul liniei - folosit la indicare eroare
 %type<num> functii_hiper
 %type<num> atribuire
 %type<num> conversie
-%type<num> conv_temperatura
 %type<num> conv_distanta
 
 %token STOP
@@ -106,19 +101,23 @@ extern int yylineno;			// numarul liniei - folosit la indicare eroare
 program_input:
 	| program_input linie
 	;
-	
+
+	/** linie de input **/
 linie: 
-			EOL 			{ printf("Introduceti o comanda:\n"); }
-		| linie_exec EOL  	{ }
+			EOL 			{ if (tastatura) printf("toy>> "); }
+		| linie_exec EOL  	{ if (tastatura) printf("toy>> "); }
     ;
 
+    /** block linii input - folosit in while, for, if **/
 linie_execs_compus:
 		'{' lista_linie_exec '}'
 
+	/** lista de instructiuni **/
 lista_linie_exec: lista_linie_exec linie_exec
 		|
 		;
 
+	/** linie executabila **/
 linie_exec:
 		  expr
 		| structura_for
@@ -128,10 +127,11 @@ linie_exec:
 		;
 
 
-
+	/** constanta PI **/
 constant: PI { $$ = 3.142; }
 		;
 		
+	/** definire expresii generale **/	
 expr:
 			SCADERE expr			{ $$ = -$2; }
     	| NUMAR            		{ $$ = $1; }
@@ -153,16 +153,19 @@ expr:
 
 		| FOR
 		| STOP					{ 
-								printf("salut :)\n"); exit(0); 
+								if (tastatura)  printf("salut :)\n"); exit(0); 
 								}
     ;
 
+    /** instructiune for - inca nu sunt implementate **/
 structura_for: FOR expr NEXT expr		
 
+	/** instructiune while **/
 structura_while: 	WHILE  expr  linie_exec
 					| WHILE expr linie_execs_compus
 					;
 
+	/** modalitati de afisare pe ecran  **/
 afisare_ecran:	AFISEAZA VARIABILA { 
 								printf("%f\n", (float)variabile_valori[$2]);
 								}
@@ -184,7 +187,7 @@ afisare_ecran:	AFISEAZA VARIABILA {
 
 		;
 
-
+	/** functii: conversii, logaritm, trigonometrie **/
 functie: 
 			conversie
 		| logaritm
@@ -197,52 +200,47 @@ functie:
 		| ROT_SCADERE expr 					{ $$ = floor($2); }
 		;
 
+	/** functii trigonometrice  **/
 functii_trig:
 			COS expr  			  	{ $$ = cos($2); }
 		| SIN expr 					{ $$ = sin($2); }
 		| TAN expr 					{ $$ = tan($2); }
 		;
 	
+	/** functie logaritm **/
 logaritm:
 			LOG2 expr 				{ 
-									fseek(f, -4, SEEK_CUR);				// formatez functia log cu baza 2 din
-									 									// modulul math
+									fseek(f, -4, SEEK_CUR);				// formatez functia python log cu 
+									 									// baza 2 din modulul math 
 									fprintf(f, ", 2)\n"); 
 									$$ = log2($2); 
 									}
 		| LOG10 expr 				{ 
-									fseek(f, -4, SEEK_CUR);				// formatez functia log cu baza 10s 
-																		// din modulul math
+									fseek(f, -4, SEEK_CUR);				// formatez functia python log cu 
+																		// baza 10 din modulul math
 									fprintf(f, ", 10)\n");
 									$$ = log10($2); 
 									}
 		;
-		
+	
+	/** functii hiperbolice **/
 functii_hiper:
 			COSH expr  			  	{ $$ = cosh($2); }
 		| SINH expr 				{ $$ = sinh($2); }
 		| TANH expr 				{ $$ = tanh($2); }
 		;
-		
+	
+	/** expresie conversie distanta**/	
 conversie:
-		conv_temperatura
 		| conv_distanta
-		| expr GBP_IN_USD   { $$ = gbp_to_usd($1); }
-		| expr USD_IN_GBP   { $$ = usd_to_gbp($1); }
-		| expr GBP_IN_EURO  { $$ = gbp_to_euro($1); }
-		| expr EURO_IN_GBP  { $$ = euro_to_gbp($1); }
-		| expr USD_IN_EURO  { $$ = usd_to_euro($1); }
-		| expr EURO_IN_USD  { $$ = euro_to_usd($1); }
 		;
 
-conv_temperatura:
-			expr CEL_IN_FAH 	{ $$ = cel_to_fah($1); }
-		| expr FAH_IN_CEL 		{ $$ = fah_to_cel($1); }
-
+	/** expresie explicita conversie  distanta **/
 conv_distanta:
-			expr M_IN_KM 			{ $$ = m_to_km($1); }
-		| expr KM_IN_M 			{ $$ = km_to_m($1); }
-		
+			expr M_IN_KM 			{ $$ = m_la_km($1); }
+		| expr KM_IN_M 			{ $$ = km_la_m($1); }
+	
+	/** expresie intitializare si atribuire **/		
 atribuire: 
 		VAR_DECLAR VARIABILA EGAL linie_exec { $$ = set_variabila($2, $4);}
 		| VARIABILA EGAL linie_exec 			{$$ = set_variabila($1, $3);}
@@ -259,15 +257,15 @@ int main(int argc, char **argv)
 	c = (char*)malloc(sizeof(char) * 100);		//sir de caractere alocat dinamic: pentru citire
 
 
-	// import modulele pentru operatii matematice, conversii monede si distante
-	fprintf(f, "%s\n%s\n%s\n%s\n\n\n", 	"#!/usr/bin/python", "import math", "import currency.converter",
-	"from measurement.measures import Distance");
-
+	// alegem sursa codului
 	if (argc > 1) {										// Compilare de fisier
 		
+		tastatura = 0;									// input-ul nu este de la tastatura
+
 		// deschidere fisier output de cod python
 		if (argc > 2)
 			deschide_fisier(strcat(argv[2], ".py"));
+
 		else
 			deschide_fisier("cod_python.py");
 
@@ -281,6 +279,11 @@ int main(int argc, char **argv)
 		printf("Compilare cu succes: %s\n", argv[1]);
 	}
 	else {												// Compilare cod din linia de comanda
+		
+		printf("Bine ai venit\n");
+		printf("toy>> ");
+		tastatura  = 1;
+
 		// deschidere fisier output de cod python
 		deschide_fisier("cod_python.py");
 
@@ -296,5 +299,6 @@ int main(int argc, char **argv)
 /* Afiseaza mesaj de eroare */
 void yyerror(const char *s)
 {
-	printf("EROARE: %s\n la linia: %d", s, yylineno);
+	printf("EROARE: %s\n la linia: %d", s, yylineno );
+	getch();
 }

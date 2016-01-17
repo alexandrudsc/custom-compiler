@@ -1,0 +1,6 @@
+var x = log2(64)
+x = x + 0.4
+-> x
+x = log10(100);
+-> x
+stop

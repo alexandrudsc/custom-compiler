@@ -67,29 +67,21 @@ extern int yydebug;
      COSH = 276,
      SINH = 277,
      TANH = 278,
-     GBP_IN_USD = 279,
-     USD_IN_GBP = 280,
-     GBP_IN_EURO = 281,
-     EURO_IN_GBP = 282,
-     USD_IN_EURO = 283,
-     EURO_IN_USD = 284,
-     CEL_IN_FAH = 285,
-     FAH_IN_CEL = 286,
-     M_IN_KM = 287,
-     KM_IN_M = 288,
-     VAR_DECLAR = 289,
-     VARIABILA = 290,
-     NUMAR = 291,
-     CUVANT = 292,
-     AFISEAZA = 293,
-     PARANTEZA_S = 294,
-     PARANTEZA_D = 295,
-     EOL = 296,
-     STOP = 297,
-     IF = 298,
-     WHILE = 299,
-     FOR = 300,
-     NEXT = 301
+     M_IN_KM = 279,
+     KM_IN_M = 280,
+     VAR_DECLAR = 281,
+     VARIABILA = 282,
+     NUMAR = 283,
+     CUVANT = 284,
+     AFISEAZA = 285,
+     PARANTEZA_S = 286,
+     PARANTEZA_D = 287,
+     EOL = 288,
+     STOP = 289,
+     IF = 290,
+     WHILE = 291,
+     FOR = 292,
+     NEXT = 293
    };
 #endif
 
@@ -98,7 +90,7 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 2058 of yacc.c  */
-#line 33 "gram.y"
+#line 36 "gram.y"
 
 	int index;
 	double num;
@@ -106,7 +98,7 @@ typedef union YYSTYPE
 
 
 /* Line 2058 of yacc.c  */
-#line 110 "gram.tab.h"
+#line 102 "gram.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
