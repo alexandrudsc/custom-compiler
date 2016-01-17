@@ -7,7 +7,7 @@ Compilator pentru limbaj toy, cu parsare in python
 * Logaritm 2 si 10
 * Cos, sin, tan
 * Cosh, sinh, tan
-* Conversii (monede, distante)
+* Conversii (distante)
 * Variabile
 * Interpretor live sau cu sursa din fisier
 
@@ -15,14 +15,16 @@ Compilator pentru limbaj toy, cu parsare in python
 ## Dependinte
 1. Bison 
 2. Flex
-3. gcc compiler
+3. gcc
 
 ## Compilare si executare
-1. bison -d gram.y
-2. flex lex.l
-3. gcc gram.tab.c lex.yy.c -lm -o compilator
+1. cd src
+2. bison -d gram.y
+3. flex lex.l
+4. gcc gram.tab.c lex.yy.c -lm -o ..\toy
 
 
 ## Compilare cu make.bat
-1. make
-2. compilator.exe
+1. cd src
+2. make
+3. toy.exe
