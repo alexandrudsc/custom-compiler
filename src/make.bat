@@ -13,7 +13,7 @@
 
 :create
 	win_flex_bison\win_bison.exe -d gram.y
-	win_flex_bison\win_flex.exe lex.l
+	win_flex_bison\win_flex.exe lexer.l
 	gcc gram.tab.c lex.yy.c -o ..\toy
 	GOTO :end
 

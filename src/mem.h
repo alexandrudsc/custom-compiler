@@ -33,7 +33,7 @@ int adauga_variabila(char* var_name)
 }
 
 /* Seteaza valoarea unei variabile */
-int set_variabila(int index, double val)
+double set_variabila(int index, double val)
 {
 	variabile_valori[index] = val;
 	variable_set[index] = 1;
@@ -41,9 +41,27 @@ int set_variabila(int index, double val)
 	return val;
 }
 
+/* Seteaza valoarea unei variabile */
+char* set_variabila_str(int index, char* val)
+{
+	variabile_cuvinte[index] = (char*)malloc(sizeof(char*) * 1000);
+	strcpy(variabile_cuvinte[index], val);
+	variable_set[index] = 1;
+	
+	return val;
+}
+
+
 char* nume_variabila(int index)
 {
 	return nume_variabile[index];
+}
+
+void free_mem()
+{
+	int x = 0;
+	for (x = 0; x < 100; x++)
+		free(variabile_cuvinte[x]);
 }
 
 #endif

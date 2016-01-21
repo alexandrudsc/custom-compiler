@@ -1,0 +1,3 @@
+exemplul este gresit
+-> "Exemplu"
+stop

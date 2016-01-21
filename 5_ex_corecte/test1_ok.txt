@@ -2,12 +2,15 @@ var x = 20
 x = x + 0.4
 -> x
 x = log2(4)
+-> "Logaritm"
 -> x
 x = x - 0.2346
 -> x
 xRotAd = |sus(x)
+-> "Rotunjire_adaugare"
 -> xRotAd
 xRotSc = |jos(x)
+-> "Rotunjire_scadere"
 -> xRotSc
 stop
-print 10123
+-> "Nu_afiseaza"

@@ -1,0 +1,5 @@
+-> "Start"
+x = 100
+de (5 ori): x = x + 1
+-> "cuvant" + x
+stop

@@ -1,0 +1,6 @@
+var nr = log10(100)
+nr = nr + 0.4
+-> nr
+-> |sus(nr)
+-> |jos(nr)
+program stop

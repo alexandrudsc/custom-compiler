@@ -1,0 +1,14 @@
+var nr = 5
+-> "Distanta_kilometri"
+-> m_>>_km(nr)
+var nrNeg = -10
+-> "Negativ"
+-> nrNeg
+-> "Modul"
+-> modul (nrNeg)
+-> "Putere"
+var pow = 2 putere 3
+-> pow
+pow = 4 ^ 4
+-> pow
+stop

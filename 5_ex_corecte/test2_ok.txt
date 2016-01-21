@@ -1,0 +1,22 @@
+var numar1 = 20
+var numar2 = 123.43
+-> "Primul_numar"
+-> x
+-> "Al_doilea_numar"
+-> x
+var suma = numar1 + numar2
+-> "Suma"
+-> suma
+var prod = numar1 * numar2
+-> "Produs"
+-> prod
+var dif = numar1 - numar2
+-> "Diferenta"
+->dif
+var cat = numar1 / numar2
+-> "Cat"
+-> cat
+-> "Numar1_mai_mic_numar2"
+-> numar1 < numar2
+stop
+print 10123

@@ -1,0 +1,15 @@
+var unghi = 1
+-> sin(unghi)
+-> cos (PI)
+var const = PI
+-> const
+var razaCerc = 4
+-> "Raza"
+-> razaCerc
+var aria = PI * razaCerc ^ 2
+-> "Aria"
+-> aria
+aria = PI * razaCerc putere 2
+-> "Aria2"
+-> aria
+stop

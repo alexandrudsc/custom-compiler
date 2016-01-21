@@ -1,0 +1,7 @@
+var intreg = 100
+-> intreg
+-> intreg / 10
+var distanta = m_>>_km(1000)
+-> distanta
+for intreg ->distanta
+stop
