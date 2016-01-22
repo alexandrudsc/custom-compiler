@@ -99,6 +99,7 @@ extern int yylineno;			// numarul liniei - folosit la indicare eroare
 		/**********			Definire reguli gramatica/expresii 								 ************/
 		/**********			Cod C asociat fiecarei expresii + Scriere in fisierul de output. ************/
 
+program: START sir_intrare STOP '\n' 
 
 program_input:	/* rand gol */
 	| program_input linie

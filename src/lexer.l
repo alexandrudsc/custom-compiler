@@ -28,7 +28,7 @@ extern FILE *f;
 
 	. 	-- orice alt caracter => EROARE
 */
-						/****************** definire gramatica/token-uri ***************/
+						/****************** definire simboluri ***************/
 %%
 [ \t]											/* ignor spatiu si tab */
 
