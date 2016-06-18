@@ -1,0 +1,7 @@
+intreg a = 100
+-> (a)
+-> (a / 10)
+var distanta = m_>>_km(1000)
+->(distanta)
+for a ->distanta
+stop

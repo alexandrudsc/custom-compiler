@@ -1,0 +1,19 @@
+real unghi = 1
+->(sin(unghi))
+->(cos (PI))
+var constanta = PI
+->(constanta)
+intreg razaCerc = 4
+->("Raza")
+->(razaCerc)
+var aria = putere(PI * razaCerc, 2)
+->("Aria")
+->(aria)
+razaCerc = 3
+->("Raza")
+->(razaCerc)
+->("Aria2")
+aria = putere(PI * razaCerc, 2)
+->("Aria2")
+->(aria)
+stop

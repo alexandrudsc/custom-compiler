@@ -1,0 +1,12 @@
+var nr = 5
+->("Distanta_kilometri")
+->(m_>>_km(nr))
+var nrNeg = -10
+->("Negativ")
+->(nrNeg)
+->("Modul")
+->(modul (nrNeg))
+->("Putere")
+var res = putere(3, 4)
+->(res)
+stop

@@ -1,0 +1,16 @@
+real x = 20
+x = x + 0.4
+->(x)
+x = loge(4)
+->("Logaritm_e")
+->(x)
+x = x - 0.2346
+->(x)
+real xRotAd = |sus(x)
+->("Rotunjire_adaugare")
+->(xRotAd)
+real xRotSc = |jos(x)
+->("Rotunjire_scadere")
+->(xRotSc)
+stop
+->("Nu_afiseaza")

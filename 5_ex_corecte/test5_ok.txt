@@ -1,0 +1,15 @@
+intreg nrNeg = -1
+->("Numar_negativ")
+->(nrNeg)
+->("Modul")
+var nrPositiv = modul(nrNeg)
+->(nrPositiv)
+de (nrPositiv ori): nrPositiv = nrPositiv + 1
+->("Rezultat_for")
+->(nrPositiv)
+var fac = fact(3)
+->("Factorial")
+->(fac)
+->("Factorial2")
+->(fact(fac))
+stop
